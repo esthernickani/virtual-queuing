@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Customer Signup {% endblock %}
+
+{% block content %}
+    <form method="POST" id="customer_signup_form">
+        {{form.hidden_tag()}}
+    {% for field in form 
+        if field.widget.input_type != 'hidden' %}
+    
+    <p>
+        {{ field.label }}
+        {{ field }}
+
+        {% if field.error %}
+            {% for error in field.errors %}
+                {{error}}
+            {% endfor %}
+        {% endif %}
+    </p>
+    {% endfor %}
+
+    <button type="submit">Submit</button>
+    </form>
+{% endblock %}
