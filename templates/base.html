@@ -7,7 +7,29 @@
 </head>
 {% block content %}
     <body>
-        <h1>hello</h1>
+        <header>
+            <img src="" alt="" class="logo">
+        </header>
+        <div class="body-main-top">
+            <img src="" alt="" class="logo">
+            <p>Welcome to VIR-QUE - Simplifying Queueing for you</p>
+            <p>Choose your role to get started:</p>
+            <button><a href="/organization/landing_page" class="">I represent an Organization</a></button>
+            <button><a href="/customer/landing_page" class="">I am a Customer</a></button>
+        </div>
+        <div class="">
+            <button><a href="" class="">Join a Queue</a></button>
+        </div>
+        <div class="body-main-bottom">
+            <div class="feature-cards">
+
+            </div>
+        </div>
+        <footer>
+            <p>copyright info</p>
+        </footer>
     </body>
 {% endblock %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </html>

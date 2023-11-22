@@ -32,7 +32,7 @@ class LinkedListTestCase(TestCase):
 
         self.assertEqual(node_one.data, 1)
         self.assertEqual(node_two.data, 2)
-        """self.assertEqual(new_list, [1,2])"""
+        self.assertIs(new_list, [1,2])
     
     def test_remove_with_idx(self):
         """test remove for a linked list"""
@@ -49,9 +49,7 @@ class LinkedListTestCase(TestCase):
 
         new_list.removeAtSpecificIdx(3)
 
-        """self.assertEqual(node_one.data, 1)
-        self.assertEqual(node_two.data, 2)
-        self.assertEqual(node_three.data, 4)"""
+        self.assertIs(new_list, [1,2,3])
         self.assertEqual(new_list.length, 3)
 
     def test_remove_first_node(self):
@@ -69,9 +67,7 @@ class LinkedListTestCase(TestCase):
 
         new_list.remove_first_node()
 
-        """self.assertEqual(node_one.data, 2)
-        self.assertEqual(node_two.data, 3)
-        self.assertEqual(node_three.data, 4)"""
+        self.assertIs(new_list, [2,3,4])
         self.assertEqual(new_list.length, 3)
 
 

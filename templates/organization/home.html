@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Organization{% endblock %}
+
+{% block content %}
+    {{organization}}
+    <h2>Current Queues</h2>
+    <p>Queue ID: </p>
+    <p>Queue length:</p>
+    <p>Time started</p>
+
+    <button><a href="/organization/start_queue" class="">Start a queue</a></button>
+{% endblock %}

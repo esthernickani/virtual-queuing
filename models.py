@@ -20,7 +20,7 @@ class Organization_Customer(db.Model):
 
     organization_id = db.Column(
         db.Integer,
-        db.ForeignKey('organizations.id')
+        db.ForeignKey('organizations.id' )
     )
 
     customer_id = db.Column(
@@ -41,6 +41,16 @@ class Customer(UserMixin, db.Model):
         db.String(200),
         nullable = False,
         unique = True
+    )
+
+    first_name = db.Column(
+        db.String(50),
+        nullable = False
+    )
+
+    last_name = db.Column(
+        db.String(50),
+        nullable = False
     )
 
     email = db.Column(
@@ -74,19 +84,22 @@ class Customer(UserMixin, db.Model):
         db.Integer
     )
 
+
     @classmethod
-    def signup(cls, username, email, password, organizations_id):
+    def signup(cls, username, first_name, last_name, email, password, organizations_id):
         """sign up user, hashes password and adds user to system"""
         hashed_pwd = bcrypt.generate_password_hash(password).decode('UTF-8')
 
         customer = Customer(
             username=username,
+            first_name = first_name,
+            last_name = last_name,
             email = email,
             password = hashed_pwd
         )
 
         db.session.add(customer)
-        db.session.commit
+        db.session.commit()
 
         for organization_id in organizations_id:
             customer = Customer.query.filter_by(username=username).first()
@@ -96,6 +109,7 @@ class Customer(UserMixin, db.Model):
             )
             
             db.session.add(organization_customer)
+        db.session.commit()
         
         
         return customer
@@ -115,6 +129,10 @@ class Customer(UserMixin, db.Model):
     @classmethod
     def get(cls, customer_id):
         return cls.query.get(int(customer_id))
+    
+    def get_id(self):
+        """get id of customer"""
+        return str(self.id)
     
 
 class Organization(UserMixin, db.Model):
@@ -182,8 +200,14 @@ class Organization(UserMixin, db.Model):
         nullable = False
     )
 
-    customer = db.relationship('Customer', secondary = Organization_Customer.__table__, backref="organizations")
+    queue = db.relationship(
+        "Queue", backref = "organizations", cascade = 'all, delete-orphan'
+    )
 
+    def get_id(self):
+        """prefix the id with o to differentiate it from customer"""
+        return str(self.id)
+    
     @classmethod
     def signup(cls, username, company_name, email, industry, street_address, street_address2, city, province_or_state, postal_code, contact_number, password):
         """sign up user, hashes password and adds user to system"""
@@ -217,10 +241,36 @@ class Organization(UserMixin, db.Model):
                 return user
             else:
                 return False
+            
     @classmethod
     def get(cls, organization_id):
-        return cls.query.get(int(organization_id))
+        return cls.query.get(int(organization_id[1:]))
 
+class Unauth_Customer(db.Model):
+    """customer to join queue that are not authenticated"""
+    __tablename__ = "unauth_customer"
+    id = db.Column(
+        db.Integer,
+        primary_key = True
+    )
+
+    first_name = db.Column(
+        db.String(50),
+        nullable = False
+    )
+
+    last_name = db.Column(
+        db.String(50),
+        nullable = False
+    )
+
+    email = db.Column(
+        db.String(100)
+    )
+
+    contact_number = db.Column(
+        db.Integer()
+    )
 
 
 class Queue(db.Model):
@@ -229,6 +279,10 @@ class Queue(db.Model):
     id = db.Column(
         db.Integer,
         primary_key = True
+    )
+
+    name = db.Column(
+        db.String()
     )
 
     location = db.Column(
@@ -241,22 +295,20 @@ class Queue(db.Model):
         db.ForeignKey('organizations.id')
     )
 
-    maxCapacity = db.Column(
-        db.Integer
+    max_capacity = db.Column(
+        db.Integer,
+        default = 0
     )
 
-    averageWaitTime = db.Column(
-        db.Integer
+    average_waittime = db.Column(
+        db.Integer,
+        default = 0
     )
 
-    timeStarted = db.Column(
+    time_started = db.Column(
         db.DateTime,
         nullable = False,
         default = datetime.utcnow()
-    )
-
-    organization = db.relationship(
-        "Organization", backref = "queue"
     )
 
 def connect_db(app):

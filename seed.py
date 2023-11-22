@@ -3,8 +3,7 @@ from models import Organization, Customer, db
 """drop all existing tables"""
 db.drop_all()
 db.create_all()
-Organization.query.delete()
-Customer.query.delete()
+
 
 #Add organizations
 WestField = Organization.signup(
@@ -67,7 +66,12 @@ db.session.commit()
 
 amystyles = Customer.signup(
                 username = 'amystyles',
+                first_name = 'Amy',
+                last_name = 'Styles',
                 email = 'amystyles@yahoo.com',
-                password='helloworld'
+                password='helloworld',
+                organizations_id=[Winners.id, Kidon.id]
             ) 
+
+db.session.commit()
 

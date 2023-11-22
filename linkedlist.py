@@ -5,6 +5,9 @@ class Node:
         """Function to create a node"""
         self.data = data
         self.next = None
+    
+    def __repr__(self):
+        return str(self.data)
 
 class LinkedList:
     def __init__(self):
@@ -20,8 +23,6 @@ class LinkedList:
             self.head = new_node
             self.tail = new_node
             self.length += 1
-            return
-        else:
             new_node.next = self.head
             self.head = new_node
             self.length += 1
@@ -88,6 +89,17 @@ class LinkedList:
             self.tail = new_node
         
         self.length += 1
+
+    def serialize(self):
+        linked_list_list = []
+        if self.head == None and self.tail == None:
+            return str(linked_list_list)
+        else:
+            current_node = self.head
+            while current_node:
+                linked_list_list.append(current_node.data)
+                current_node = current_node.next
+        return f"{linked_list_list}"
     
     def __repr__(self):
         """return a human readable version of linked list"""

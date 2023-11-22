@@ -1,8 +1,8 @@
 {% extends "base.html" %}
-{% block title %} Start Queue {% endblock %}
+{% block title %}Customer Signup {% endblock %}
 
 {% block content %}
-    <form method="POST" id="start_queue_form">
+    <form method="POST" id="customer_signup_form">
         {{ form.hidden_tag() }}
 
         {% for field in form if field.widget.input_type != 'hidden' %}
@@ -12,6 +12,6 @@
         {{ field(placeholder=field.label.text, class="form-control") }}
         {% endfor %}
 
-        <button class="btn btn-primary btn-lg btn-block">Start queue</button>
+        <button class="btn btn-primary btn-lg btn-block">Signup</button>
     </form>
 {% endblock %}

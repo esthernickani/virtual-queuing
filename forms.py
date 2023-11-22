@@ -27,6 +27,19 @@ industry_choices = [
     ('pharmaceuticals', 'Pharmaceuticals'),
     ('other', 'Other')
 ]
+
+queue_name_choices = [
+    ("un", "un"),
+    ("deux", "deux"),
+    ("trois", "trois"),
+    ("quatre", "quatre"),
+    ("cinq", "cinq"),
+    ("six", "six"),
+    ("sept", "sept"),
+    ("huit", "huit"),
+    ("neuf", "neuf"),
+    ("dix", "dix")
+]
     
 
 class OrganizationSignUpForm(FlaskForm):
@@ -45,17 +58,21 @@ class OrganizationSignUpForm(FlaskForm):
 
 class StartQueueForm(FlaskForm):
     """Forms to start a queue"""
+    queue_name = StringField('Name of queue', validators=[DataRequired()])
     location = StringField('City', validators=[DataRequired()])
-    waittime = BooleanField('Is there an average wait time included in this queue')
-    average_waittime = IntegerField('Enter average wait time in minutes')
-    max_capacity = IntegerField('Max Queue Capacity')
+    waittime = BooleanField('Is there an average wait time included in this queue', validators=[Optional()])
+    average_waittime = IntegerField('Enter average wait time in minutes', validators=[Optional()])
+    max_capacity = IntegerField('Max Queue Capacity', validators=[Optional()])
 
 class CustomerSignUpForm(FlaskForm):
     """Form for user to sign up"""
     username = StringField("Username", validators = [DataRequired()])
+    first_name = StringField("First Name", validators = [DataRequired()])
+    last_name = StringField("Last Name", validators = [DataRequired()])
     email = StringField("Contact Email", validators = [DataRequired(), Email()])
+    contact_number = StringField('Contact Number', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
-    organizations = SelectMultipleField('Favorite Organizations')
+    organizations = SelectMultipleField('Favorite Organizations', coerce=int)
 
 
 class OrganizationLoginForm(FlaskForm):
@@ -67,3 +84,10 @@ class CustomerLoginForm(FlaskForm):
     """Form to login as a user"""
     username = StringField("Username", validators = [DataRequired()])
     password = PasswordField('String', validators=[DataRequired()])
+
+class UnauthCustomerForm(FlaskForm): 
+    """form for an unauth user to be added to the database so they can join a queue"""
+    first_name = StringField("First Name", validators = [DataRequired()])
+    last_name = StringField("Last Name", validators = [DataRequired()])
+    email = StringField("Contact Email", validators = [DataRequired(), Email()])
+    contact_number = StringField('Contact Number', validators=[DataRequired()])

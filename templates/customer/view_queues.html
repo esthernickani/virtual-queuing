@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block title %}Queues{% endblock %}
+
+{% block content %}
+    <p>Click on a queue to join</p>
+    {% for queue in queues %}
+        <p><a href="//customer/join_queue/{{queue.id}}" class="">{{queue.name}}</a></p>
+    {% endfor %}
+{% endblock %}
