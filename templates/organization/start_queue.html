@@ -2,6 +2,7 @@
 {% block title %} Start Queue {% endblock %}
 
 {% block content %}
+    {{queue_name}}
     <form method="POST" id="start_queue_form">
         {{ form.hidden_tag() }}
 

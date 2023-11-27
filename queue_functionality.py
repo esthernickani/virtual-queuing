@@ -1,25 +1,26 @@
 """functions to deal with starting a queue and others, calling linked list"""
 from linkedlist import LinkedList, Node
-from models import Organization, Customer, Queue, db
+from models import Organization, Customer, db
 from flask import session
-import json
+import jsonpickle
 
+def create_unauth_customer_dict(first_name, last_name, contact_number, email):
+    new_customer = {
+        "First name" : first_name,
+        "Last name" : last_name,
+        "Contact Number": contact_number,
+        "email" : email
+    }
+    return new_customer
 
 def start_queue(organization_id, max_capacity, avg_waittime, queue_name):
     """function for organization to star a queue"""
     organization = Organization.query.get(organization_id)
-    new_queue = Queue(
-        name = queue_name,
-        location = organization.city,
-        organization_id = organization_id,
-        max_capacity = max_capacity,
-        average_waittime = avg_waittime
-    )
 
-    db.session.add(new_queue)
     db.session.commit()
+    queue = jsonpickle.encode(LinkedList())
 
-    queue_name = json.dumps(LinkedList().serialize())
+    session['queue'] = queue
     
     return queue_name
 

@@ -8,5 +8,11 @@
     <p>Queue length:</p>
     <p>Time started</p>
 
-    <button><a href="/organization/start_queue" class="">Start a queue</a></button>
+    <button id="start_queue">Start a queue</button>
+    <p class="error_message"></p>
+    <form action="" class="hidden activate_queue">
+        <label for="activate">Activate Queue:</label>
+        <input type="radio" name="activate" id="activate" class="">
+        <button id="activate_queue">Start queue</button>
+    </form>
 {% endblock %}

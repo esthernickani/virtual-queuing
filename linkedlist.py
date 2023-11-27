@@ -101,15 +101,16 @@ class LinkedList:
                 current_node = current_node.next
         return f"{linked_list_list}"
     
-    def __repr__(self):
-        """return a human readable version of linked list"""
-        linked_list_list = []
-        if self.head == None and self.tail == None:
-            return str(linked_list_list)
-        else:
-            current_node = self.head
-            while current_node:
-                linked_list_list.append(current_node.data)
-                current_node = current_node.next
-        return f"{linked_list_list}"
+    """def __repr__(self):
+        return a human readable version of linked list"""
+        #linked_list_list = []
+        #if self.head == None and self.tail == None:
+         #   return str(linked_list_list)
+        #else:
+        #    current_node = self.head
+         ##   while current_node:
+           #     linked_list_list.append(current_node.data)
+          #      current_node = current_node.next
+        #return f"{linked_list_list}"
+""""""
         

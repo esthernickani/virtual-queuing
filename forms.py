@@ -1,6 +1,6 @@
 import email_validator
 from flask_wtf import FlaskForm
-from wtforms import StringField, SelectField, PasswordField, BooleanField, IntegerField, SelectMultipleField
+from wtforms import StringField, SelectField, PasswordField, BooleanField, IntegerField, SelectMultipleField, RadioField
 from wtforms.validators import DataRequired, Email, Length, URL, Optional
 
 
@@ -58,11 +58,7 @@ class OrganizationSignUpForm(FlaskForm):
 
 class StartQueueForm(FlaskForm):
     """Forms to start a queue"""
-    queue_name = StringField('Name of queue', validators=[DataRequired()])
-    location = StringField('City', validators=[DataRequired()])
-    waittime = BooleanField('Is there an average wait time included in this queue', validators=[Optional()])
-    average_waittime = IntegerField('Enter average wait time in minutes', validators=[Optional()])
-    max_capacity = IntegerField('Max Queue Capacity', validators=[Optional()])
+    activate_queue = RadioField('Activate Queue', validators=[DataRequired()])
 
 class CustomerSignUpForm(FlaskForm):
     """Form for user to sign up"""

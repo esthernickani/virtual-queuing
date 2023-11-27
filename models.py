@@ -3,11 +3,23 @@ import pdb
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
+from linkedlist import LinkedList, Node
+import jsonpickle
 
 from datetime import datetime
 
 bcrypt = Bcrypt()
 db = SQLAlchemy()
+
+
+def create_queue():
+    #function to create queue
+    linked_list = LinkedList()
+    #convert queue to JSON so it can be stored in database
+    queue = jsonpickle.encode(linked_list)
+    return queue
+
+queue = create_queue()
 
 class Organization_Customer(db.Model):
     """link customers to organization"""
@@ -200,8 +212,9 @@ class Organization(UserMixin, db.Model):
         nullable = False
     )
 
-    queue = db.relationship(
-        "Queue", backref = "organizations", cascade = 'all, delete-orphan'
+    queue = db.Column(
+        db.String,
+        default = queue
     )
 
     def get_id(self):
@@ -272,44 +285,6 @@ class Unauth_Customer(db.Model):
         db.Integer()
     )
 
-
-class Queue(db.Model):
-    """all current operating queues"""
-    __tablename__ = "queue"
-    id = db.Column(
-        db.Integer,
-        primary_key = True
-    )
-
-    name = db.Column(
-        db.String()
-    )
-
-    location = db.Column(
-        db.String(50),
-        nullable = False
-    )
-
-    organization_id = db.Column(
-        db.Integer,
-        db.ForeignKey('organizations.id')
-    )
-
-    max_capacity = db.Column(
-        db.Integer,
-        default = 0
-    )
-
-    average_waittime = db.Column(
-        db.Integer,
-        default = 0
-    )
-
-    time_started = db.Column(
-        db.DateTime,
-        nullable = False,
-        default = datetime.utcnow()
-    )
 
 def connect_db(app):
     """Connect this database to provided Flask app."""
