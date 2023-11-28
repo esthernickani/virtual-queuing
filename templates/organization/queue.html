@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %} Start Queue {% endblock %}
+
+{% block content %}
+    {% if organization.queue_is_active %}
+    {% else %}
+    <form action="" class="activate_queue">
+        <label for="activate">Activate Queue:</label>
+        <input type="radio" name="activate" id="activate" class="">
+        <button id="activate_queue">Start queue</button>
+    </form>
+    <p>Your current approximate wait time is between {{minimum_wait_time}} and {{maximum_wait_time}} minutes</p>
+    <button class="edit_wait_time">Edit</button>
+    <form action="" class="edit_wait_time hidden">
+        
+    </form>
+    {% endif %}
+
+
+{% endblock %}

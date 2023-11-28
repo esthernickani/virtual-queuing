@@ -9,6 +9,17 @@
     {% endfor %}
     </div>
     <form action="" class="hidden join_queue_form">
+        <fieldset>
+            <legend>Individual or Group:</legend>
+            <div>
+              <input type="radio" id="individual" name="size" value="Individual" checked />
+              <label for="individual">Individual</label>
+            </div>
+            <div>
+              <input type="radio" id="group" name="size" value="Group" />
+              <label for="grouo">Group</label>
+            </div>
+        </fieldset>
         <label for="first_name">First Name:</label>
         <input type="text" name="first_name" id="first_name" class="">
         <label for="last_name">Last Name:</label>
@@ -17,6 +28,8 @@
         <input type="text" name="email" id="email" class="">
         <label for="contact_number">Contact Number:</label>
         <input type="number" name="contact_number" id="contact_number" class="">
+        <label for="group">How many individuals are in your group:</label>
+        <input type="number" name="group" id="group" class="">
         <button id="submit_join_queue_form">Join queue</button>
     </form>
 {% endblock %}

@@ -2,17 +2,14 @@
 {% block title %}Organization{% endblock %}
 
 {% block content %}
-    {{organization}}
-    <h2>Current Queues</h2>
-    <p>Queue ID: </p>
-    <p>Queue length:</p>
-    <p>Time started</p>
+    <nav class="">
+        <ul>
+            <li><a href="/organization/queue" class="">Queue</a></li>
+            <li><a href="" class="">Profile</a></li>
+            <li><a href="" class="">Log out</a></li>
+        </ul>
+    </nav>
 
     <button id="start_queue">Start a queue</button>
     <p class="error_message"></p>
-    <form action="" class="hidden activate_queue">
-        <label for="activate">Activate Queue:</label>
-        <input type="radio" name="activate" id="activate" class="">
-        <button id="activate_queue">Start queue</button>
-    </form>
 {% endblock %}

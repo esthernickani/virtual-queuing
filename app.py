@@ -3,9 +3,9 @@ import pdb
 import json
 import jsonpickle
 
-from flask import Flask, render_template, session, redirect, request, url_for, flash
-from flask_login import LoginManager, login_user, logout_user, current_user
-from models import db, connect_db, Organization, Customer
+from flask import Flask, render_template, session, redirect, request, url_for, flash, g
+from flask_login import LoginManager, login_user, logout_user, current_user, login_required
+from models import db, connect_db, User
 from forms import OrganizationSignUpForm, StartQueueForm, CustomerLoginForm, CustomerSignUpForm, OrganizationLoginForm
 from queue_functionality import start_queue, join_queue, dequeue, dequeue_and_hold, create_unauth_customer_dict
 from sqlalchemy.exc import IntegrityError
@@ -42,13 +42,14 @@ Session(app)
 login_manager = LoginManager(app)
 
 @login_manager.user_loader
-def load_organization(organization_id):
-    return Organization.get(organization_id)
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
-@login_manager.user_loader
-def load_customer(customer_id):
-    return Customer.get(customer_id)
-
+#save user to g
+"""@app.before_request
+def add_organization_to_g():
+    if current_user.is_authenticated:
+        g.user = current_user.get_id"""
 #------------------------------------------------HOME----------------------------------------------------------------
 
 @app.route('/')
@@ -65,23 +66,19 @@ def show_organization_landing():
 @socketio.on("connect")
 def handle_connect():
     """handle clients(organizations and customers) connecting to server"""
-    print('Client connected')
+    organization = User.query.get_or_404(current_user.get_id())
+    if organization.queue_is_active == False:
+        organization.queue_is_active = True
+        db.session.commit()
 
-@socketio.on("check_username")
-def check_username(username):
-    organization_id = session.get('organization_id')
-    organization = Organization.query.get_or_404(organization_id)
-    if organization.username == username: 
-        emit('redirect', {'url': url_for('organization_start_queue')})
-    else: 
-        emit('error', {"message": "Please enter the correct username"})
+    print('Client connected')
 
 @socketio.on("add_unauth_to_queue")
 def add_unauth_to_queue(first_name, last_name, email, contact_number, organization):
     print(organization)
     
     customer = create_unauth_customer_dict(first_name, last_name, email, contact_number)
-    organization = Organization.query.filter_by(username = organization).first()
+    organization = User.query.filter_by(username = organization).first()
     queue = jsonpickle.decode(organization.queue)
     new_customer = Node(customer)
     #add customer to queue
@@ -91,10 +88,8 @@ def add_unauth_to_queue(first_name, last_name, email, contact_number, organizati
     db.session.commit()
     
     pdb.set_trace()
+    print (organization.queue)
     return
-
-    
-
 
     
 @app.route('/organization/signup', methods=['GET', 'POST'])
@@ -104,7 +99,7 @@ def organization_signup():
     if form.validate_on_submit():
         """Get form data and add to database"""
         try:
-            organization = Organization.signup(
+            organization = User.signup(
                 username = form.username.data,
                 company_name = form.company_name.data,
                 email = form.email.data,
@@ -134,15 +129,13 @@ def organization_login():
     form = OrganizationLoginForm()
     if form.validate_on_submit():
         """Get form data and add to database"""
-        organization = Organization.authenticate(
+        organization = User.authenticate(
             username = form.username.data,
             password=form.password.data
         )
         
         if organization:
-            session['organization_id'] = organization.id
-            print(session.get('organization_id'))
-            print(current_user.is_authenticated)
+            login_user(organization)
         else:
             return redirect('/')
         
@@ -157,7 +150,7 @@ def organization_home():
     """show home page for logged in organization"""
     if session['organization_id']:
         organization_id = session['organization_id']
-        organization = Organization.query.get(organization_id)
+        organization = User.query.get(organization_id)
         return render_template('organization/home.html', organization = organization)
     else:
         flash("You need to be logged in to view this page")
@@ -178,90 +171,24 @@ def show_customer_landing():
     """show home page for customer not logged in"""
     return render_template('customer/landing_page.html')
 
-@app.route('/customer/signup', methods=['GET', 'POST'])
-def customer_signup():
-    """Show form for organizations to sign up and if already sign"""
-    #get organizations in db
-    organization_choices = [(organization.id, organization.company_name) for organization in Organization.query.all()]
 
-    form = CustomerSignUpForm()
-    form.organizations.choices = organization_choices
-    if form.validate_on_submit():
-        """Get form data and add to database"""
-        customer = Customer.signup(
-            username = form.username.data,
-            email = form.email.data,
-            password=form.password.data,
-            organizations_id = request.form.getlist('organizations')
-        ) 
-
-        db.session.commit()
-
-        return render_template('customer/home.html', customer = customer)
-    else:
-        """show form"""
-        print (request.form.getlist('organizations'))
-        print(form.username.data)
-        print(form.email.data)
-        print(form.password.data)
-        
-        return render_template('customer/signup.html', form=form)
-
-@app.route('/customer/login', methods=['GET', 'POST'])
-def customer_login():
-    """Show form for organizations to sign up and if already sign"""
-    form = CustomerLoginForm()
-    if form.validate_on_submit():
-        """Get form data and add to database and login user"""
-        customer = Customer.authenticate(
-            username=form.username.data,
-            password=form.password.data
-        )
-
-        print(customer)
-        
-        if customer:
-            login_user(customer)
-        else:
-            return redirect('/')
-        
-        return render_template('customer/home.html', customer = customer)
-    else:
-        """show form"""
-        return render_template('customer/login.html', form=form)
     
 #---------------------------QUEUE---------------------------------------------------
-@app.route('/organization/start_queue', methods=['GET', 'POST'])
+@app.route('/organization/queue', methods=['GET', 'POST'])
+@login_required
 def organization_start_queue():
     """Show form for organizations to sign up and if already sign"""
-    form = StartQueueForm()
-    if form.validate_on_submit():
-        """Get form data and add to database"""
-        location = form.location.data
-        avg_wait_time = request.form.get('average_waittime', 0)
-        max_capacity = request.form.get('max_capacity', 0)
-        name = form.queue_name.data
-
-        organization_id = session['organization_id']
-        queue_name = start_queue(
-            queue_name = name,
-            organization_id = organization_id, 
-            max_capacity = max_capacity, 
-            avg_waittime = avg_wait_time
-            )
-        
-        session[name] = queue_name
-        
-        return redirect('/organization/home')
-
-    else:
-        """show form"""
-        return render_template('organization/start_queue.html', form=form)
+    organization = User.query.get_or_404(current_user.get_id())
+    wait_time = jsonpickle.decode(organization.queue_wait_time)
+    minimum_wait_time = wait_time['min']
+    maximum_wait_time = wait_time['max']
+    
+    return render_template('organization/queue.html', organization=organization, minimum_wait_time=minimum_wait_time, maximum_wait_time=maximum_wait_time)
     
 @app.route('/customer/view_queues', methods = ['GET', 'POST'])
 def show_current_queues():
     """show current queues in the system"""
-    organizations = Organization.query.all()
+    organizations = User.query.all()
 
     return render_template('customer/view_queues.html', organizations=organizations)
     

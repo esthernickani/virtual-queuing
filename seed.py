@@ -1,4 +1,4 @@
-from models import Organization, Customer, db
+from models import User, db
 
 """drop all existing tables"""
 db.drop_all()
@@ -6,7 +6,7 @@ db.create_all()
 
 
 #Add organizations
-WestField = Organization.signup(
+WestField = User.signup(
     username = 'westfield',
     company_name = 'Westfield Corporation',
     email = 'westfield@yahoo.com',
@@ -20,7 +20,7 @@ WestField = Organization.signup(
     password='helloworld'
 )
 
-MiaHealthCare = Organization.signup(
+MiaHealthCare = User.signup(
     username = 'miahealthcare',
     company_name = 'Mia Health Centre',
     email = 'miahc@yahoo.com',
@@ -34,7 +34,7 @@ MiaHealthCare = Organization.signup(
     password='helloworld'
 )
 
-Kidon = Organization.signup(
+Kidon = User.signup(
     username = 'kidon',
     company_name = 'Kidon',
     email = 'kidon@yahoo.com',
@@ -48,7 +48,7 @@ Kidon = Organization.signup(
     password='helloworld'
 )
 
-Winners = Organization.signup(
+Winners = User.signup(
     username = 'winners',
     company_name = 'Winners',
     email = 'winners@yahoo.com',
@@ -61,17 +61,6 @@ Winners = Organization.signup(
     postal_code= 'T5K0G6',
     password='helloworld'
 )
-
-db.session.commit()
-
-amystyles = Customer.signup(
-                username = 'amystyles',
-                first_name = 'Amy',
-                last_name = 'Styles',
-                email = 'amystyles@yahoo.com',
-                password='helloworld',
-                organizations_id=[Winners.id, Kidon.id]
-            ) 
 
 db.session.commit()
 
