@@ -5,12 +5,12 @@ import jsonpickle
 
 from flask import Flask, render_template, session, redirect, request, url_for, flash, g
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required
-from models import db, connect_db, User
+from models import db, connect_db, User, Unauth_Customer
 from forms import OrganizationSignUpForm, StartQueueForm, CustomerLoginForm, CustomerSignUpForm, OrganizationLoginForm
-from queue_functionality import start_queue, join_queue, dequeue, dequeue_and_hold, create_unauth_customer_dict
+from queue_functionality import generate_code, create_unauth_customer_dict, get_tag
 from sqlalchemy.exc import IntegrityError
 from flask_session import Session
-from flask_socketio import SocketIO, emit
+from flask_socketio import SocketIO, emit, join_room, leave_room, send
 from threading import Lock
 
 from linkedlist import LinkedList, Node
@@ -66,32 +66,64 @@ def show_organization_landing():
 @socketio.on("connect")
 def handle_connect():
     """handle clients(organizations and customers) connecting to server"""
-    organization = User.query.get_or_404(current_user.get_id())
-    if organization.queue_is_active == False:
-        organization.queue_is_active = True
-        db.session.commit()
-
     print('Client connected')
 
-@socketio.on("add_unauth_to_queue")
-def add_unauth_to_queue(first_name, last_name, email, contact_number, organization):
-    print(organization)
-    
-    customer = create_unauth_customer_dict(first_name, last_name, email, contact_number)
-    organization = User.query.filter_by(username = organization).first()
-    queue = jsonpickle.decode(organization.queue)
-    new_customer = Node(customer)
-    #add customer to queue
-    queue.insert_at_end(new_customer)
-    updated_queue = jsonpickle.encode(queue)
-    organization.queue = updated_queue
-    db.session.commit()
-    
-    pdb.set_trace()
-    print (organization.queue)
-    return
+@socketio.on("join")
+def activate_queue():
+    """activate queue"""
+    organization = User.query.get_or_404(current_user.get_id())
+    if organization:
+        if organization.queue_is_active == False:
+            organization.queue_is_active = True
+            db.session.commit()
+            room = organization.username
+            join_room(room)
+            print(f"{room} queue has been activated")
 
-    
+@socketio.on("join_queue")
+def join_queue(data):
+   """join queue"""
+   #get room from data sent from script.js-client side
+   room = data['organizationName']
+   join_room(room)
+   
+   #get tag to best describe customer or group of customers
+   tag = get_tag(data['groupSize'])
+
+   #create customer dict and make it a node to add to list from database
+   customer = create_unauth_customer_dict(data['firstName'], data['lastName'], data['contactNumber'], data['email'], tag)
+   customer_node = Node(customer)
+   
+   organization = User.query.filter_by(username = data['organizationName']).first()
+   queue = jsonpickle.decode(organization.queue)
+   print(f"queue---->{queue}")
+   queue.insert_at_end(customer_node)
+   updated_queue = jsonpickle.encode(queue)
+   organization.queue = updated_queue
+   db.session.commit()
+
+   #get all unique codes to make sure unique code is not repeated
+   
+   new_customer_code = generate_code()
+   new_customer = Unauth_Customer(
+       first_name = data['firstName'],
+       last_name = data['lastName'],
+       email = data['email'],
+       code = new_customer_code,
+       contact_number =  data['contactNumber'],
+       organization_id = organization.id
+   )
+
+   db.session.add(new_customer)
+   db.session.commit()
+
+   """socket redirect customer to the page that shows queue"""
+   emit('redirect_customer', {'url': url_for('show_customer_on_queue')})
+
+@app.route('/customer/waitlist')
+def show_customer_on_queue():
+    return render_template('customer/in_queue.html')
+
 @app.route('/organization/signup', methods=['GET', 'POST'])
 def organization_signup():
     """Show form for organizations to sign up and if already sign"""
@@ -104,7 +136,7 @@ def organization_signup():
                 company_name = form.company_name.data,
                 email = form.email.data,
                 industry = form.industry.data,
-                street_address= form.street_address.data, 
+                streetaaddress= form.street_address.data, 
                 street_address2= form.street_address2.data or None,
                 city = form.city.data,
                 province_or_state=form.province_or_state.data,
@@ -176,14 +208,14 @@ def show_customer_landing():
 #---------------------------QUEUE---------------------------------------------------
 @app.route('/organization/queue', methods=['GET', 'POST'])
 @login_required
-def organization_start_queue():
+def organization_queue():
     """Show form for organizations to sign up and if already sign"""
     organization = User.query.get_or_404(current_user.get_id())
     wait_time = jsonpickle.decode(organization.queue_wait_time)
     minimum_wait_time = wait_time['min']
     maximum_wait_time = wait_time['max']
-    
-    return render_template('organization/queue.html', organization=organization, minimum_wait_time=minimum_wait_time, maximum_wait_time=maximum_wait_time)
+    queue = jsonpickle.decode(organization.queue)
+    return render_template('organization/queue.html', organization=organization, minimum_wait_time=minimum_wait_time, maximum_wait_time=maximum_wait_time, queue = queue)
     
 @app.route('/customer/view_queues', methods = ['GET', 'POST'])
 def show_current_queues():

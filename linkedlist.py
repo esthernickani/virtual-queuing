@@ -15,6 +15,9 @@ class LinkedList:
         self.head = None
         self.tail = None
         self.length = 0
+    
+    def __iter__(self):
+        return LinkedListIterator(self.head)
 
     def insert_at_begin(self, val):
         """insert at beginning of linked list"""
@@ -113,4 +116,17 @@ class LinkedList:
           #      current_node = current_node.next
         #return f"{linked_list_list}"
 """"""
-        
+class LinkedListIterator:
+    def __init__(self, head):
+        self.current = head
+    
+    def __iter__(self):
+        return self
+    
+    def __next__(self):
+        if not self.current:
+            raise StopIteration
+        else:
+            item = self.current.data
+            self.current = self.current.next
+            return item

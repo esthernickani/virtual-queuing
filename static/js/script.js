@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", (e) => {
     /*initialise socket*/
     const socket = io({autoConnect: false});
+    console.log(socket.connected)
 
     /*get elements for HTML*/
     const startQueueBtn = document.querySelector('#start_queue');
@@ -11,6 +12,7 @@ document.addEventListener("DOMContentLoaded", (e) => {
     const joinQueueForm = document.querySelector('.join_queue_form')
     const submitJoinQueueForm = document.querySelector('#submit_join_queue_form')
     const organization = document.querySelector('.organizations')
+    let organizationName;
 
     /*function to remove hidden class from form to reenter username */
     function displayActivateQueueForm(e) {
@@ -24,6 +26,7 @@ document.addEventListener("DOMContentLoaded", (e) => {
     }
 
     function connectOrgToSocket(e) {
+        //function to connect organization to socket to activate queue
         e.preventDefault()
         /*get username and queuename from form */
         let checked = document.getElementById('activate').value;
@@ -32,27 +35,47 @@ document.addEventListener("DOMContentLoaded", (e) => {
         /*Connect to socket if activated*/
         if (checked) {
             socket.connect();
+
+            socket.emit('join')
         }
-        
     }
 
+
     function connectCustomerToSocket(e) {
+        //function to connect customer to socket to join queue
+
+        console.log(e)
         e.preventDefault()
-        
+       
+        /*get form data*/
         let firstName = document.getElementById('first_name').value;
         let lastName = document.getElementById('last_name').value;
         let email = document.getElementById('email').value;
         let contactNumber = document.getElementById('contact_number').value;
-        let organization = document.querySelector('.organization_name').value;
-        
-        console.log('a')
-        console.log(socket.connected)
-        socket.connect()
+        let individualOrGroup = document.querySelector('input[name="size"]:checked').value;
+        let groupSize = document.getElementById('group_size').value || null;
 
-        socket.on("connect", function() {
-            socket.emit("add_unauth_to_queue", firstName, lastName, email, contactNumber, 'winners')
+        socket.connect()
+        
+        socket.emit('join_queue', {
+            firstName:firstName,
+            lastName:lastName,
+            email:email,
+            contactNumber:contactNumber,
+            organizationName:organizationName,
+            groupSize : groupSize
         })
+        
+        
+        
     }
+
+    //on redirect socket should take the organization to the queue page
+    socket.on('redirect_customer', function(destination) {
+        console.log(destination)
+        window.location.href = destination.url
+    })
+
 
     /*check is the organization homepage is loaded  */
     if (startQueueBtn) {
@@ -64,20 +87,22 @@ document.addEventListener("DOMContentLoaded", (e) => {
         activateQueue.addEventListener('click', connectOrgToSocket)
     }
 
-
+    //show form for customer to join
     if (showQueueBtn) {
         showQueueBtn.addEventListener('click', displayCustomerJoinQueueForm)
     }
 
+    //connect customer to socket when clicked on submit form
     if (submitJoinQueueForm) {
         submitJoinQueueForm.addEventListener('click', connectCustomerToSocket)
     }
 
+    //get organization name that customer wants to join queue
     if (organization) {
         organization.addEventListener('click', function(e) {
-            if (e.target.classList.contains("organization_name")) {
-                displayCustomerJoinQueueForm()
-            } 
+            organizationName = e.target.innerText
+            displayCustomerJoinQueueForm()
+            return;
         })
     }
 })

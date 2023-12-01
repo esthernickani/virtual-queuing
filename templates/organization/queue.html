@@ -3,17 +3,33 @@
 
 {% block content %}
     {% if organization.queue_is_active %}
+        <div class="queue">
+            {% if queue.length == 0 %}
+                <p>Queue is currently empty</p>
+            {% else %}
+                <h2>Queue</h2>
+                    {% for customer in queue %}
+                        <div class="customer_card">
+                            <p>{{customer.tag}}</p>
+                            <p><!--icon for name-->Name: {{customer.data['First name']}} {{customer.data['Last name']}}</p>
+                            <p>Contact number: {{customer.data['Contact Number']}}</p>
+                            <p>Email: {{customer.data['email']}}</p>
+                            <button><a href="" class="">Dequeue</a></button>
+                        </div>
+                    {% endfor %}
+            {% endif %}
+        </div>
     {% else %}
-    <form action="" class="activate_queue">
-        <label for="activate">Activate Queue:</label>
-        <input type="radio" name="activate" id="activate" class="">
-        <button id="activate_queue">Start queue</button>
-    </form>
-    <p>Your current approximate wait time is between {{minimum_wait_time}} and {{maximum_wait_time}} minutes</p>
-    <button class="edit_wait_time">Edit</button>
-    <form action="" class="edit_wait_time hidden">
-        
-    </form>
+        <form action="" class="activate_queue">
+            <label for="activate">Activate Queue:</label>
+            <input type="radio" name="activate" id="activate" class="">
+            <button id="activate_queue">Start queue</button>
+        </form>
+        <p>Your current approximate wait time is between {{minimum_wait_time}} and {{maximum_wait_time}} minutes</p>
+        <button class="edit_wait_time">Edit</button>
+        <form action="" class="edit_wait_time hidden">
+
+        </form>
     {% endif %}
 
 

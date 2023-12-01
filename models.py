@@ -111,6 +111,10 @@ class User(UserMixin, db.Model):
         db.String,
         default = wait_time
     )
+
+    to_be_seated = db.Column(
+        db.String
+    )
     
     @classmethod
     def signup(cls, username, company_name, email, industry, street_address, street_address2, city, province_or_state, postal_code, contact_number, password):
@@ -169,8 +173,17 @@ class Unauth_Customer(db.Model):
         db.String(100)
     )
 
+    code = db.Column(
+        db.String,
+        nullable = False
+    )
+
     contact_number = db.Column(
         db.Integer()
+    )
+
+    organization_id = db.Column(
+        
     )
 
 
