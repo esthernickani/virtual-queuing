@@ -12,16 +12,16 @@ from sqlalchemy.exc import IntegrityError
 from flask_session import Session
 from flask_socketio import SocketIO, emit, join_room, leave_room, send
 from api_requests import send_dequeue_message, send_join_queue_message
+from flask_mail import Mail, Message
+from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identity
 
 from linkedlist import LinkedList, Node
 
 app = Flask(__name__, template_folder = "templates")
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///virque'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-app.config['SQLALCHEMY_ECHO'] = True
-app.config['SECRET_KEY'] = 'n2BxpDIorno08ai6oI47ew'
-app.config['SESSION_TYPE'] = 'filesystem'
+
+
+mail = Mail(app)
 
 #create an instance of socket io
 socketio = SocketIO(app)
@@ -49,6 +49,17 @@ def add_organization_to_g():
     if current_user.is_authenticated:
         g.user = .get_id"""
 #------------------------------------------------HOME----------------------------------------------------------------
+def send_email(user):
+    """function to send email to user to reset password"""
+    token = user.get_reset_token()
+
+    msg = Message()
+    msg.subject = "VIRQUE Password Reset"
+    msg.sender = os.getenv('MAIL_USERNAME')
+    msg.recipients = [user.email]
+    msg.body = render_template('reset_email.html', user=user, token=token)
+
+    mail.send(msg)
 
 @app.route('/')
 def homepage():
@@ -229,14 +240,14 @@ def organization_signup():
                 province_or_state=form.province_or_state.data,
                 contact_number = form.contact_number.data,
                 postal_code=form.postal_code.data,
-                password=form.password.data, 
+                password=form.init_password.data, 
                 to_be_seated = jsonpickle.encode(LinkedList())
             )
             db.session.commit()
             
         except IntegrityError as err:
-            print(err.args.Key)
-            pdb.set_trace()
+            print(err)
+    
 
         return render_template('organization/login.html', organization = organization)
     else:
@@ -306,6 +317,25 @@ def edit_organization_profile():
         return redirect('/organization/profile/overview')
     else:
         return render_template('/organization/profile-edit.html', form=form)
+
+@app.route('/organization/security/forgot-password', methods = ['GET', 'POST'])
+def reset_password():
+    """"""
+    if request.method == 'GET':
+        return render_template('organization/reset-password.html')
+    
+    if request.method == 'POST':
+        email = request.form['email']
+        user = User.verify_email(email)
+        print(user)
+        send_email(user)
+        return redirect('/organization/login')
+    
+@app.route('/organization/security/reset-password/<token>', methods = ['GET', 'POST'])
+def reset_verified(token):
+    """"""
+
+    return render_template("organization/reset-password-new.html")
 
 
 """@app.route('/organization/profile/queue_preferences', methods = ['GET', 'POST'])

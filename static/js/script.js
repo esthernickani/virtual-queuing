@@ -170,5 +170,27 @@ document.addEventListener("DOMContentLoaded", (e) => {
             return;
         })
     }
+
+
+    //check if password is same as confirm password
+    const password = document.querySelector("#password")
+    const confirmPassword = document.querySelector("#password_confirm")
+    const message = document.querySelector("#message")
+
+    if(password && confirmPassword) {
+        confirmPassword.addEventListener("keyup", passConfirm)
+    }
+    
+
+    function passConfirm(e) {
+        e.preventDefault();
+        if (password.value == confirmPassword.value) {
+            message.style.color = "Green"
+            message.textContent = "Passwords match"
+        } else {
+            message.style.color = "Red"
+            message.textContent = "Passwords do not match"
+        }
+    }
 })
 

@@ -4,7 +4,10 @@ from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from linkedlist import LinkedList, Node
+from time import time
 import jsonpickle
+import os
+import jwt
 
 from datetime import datetime
 
@@ -152,6 +155,34 @@ class User(UserMixin, db.Model):
                 return False
             
     customer = db.relationship('Unauth_Customer', backref="organization", cascade="all, delete-orphan")
+
+    def set_password(self, password, commit = False):
+        """set new password in the event the user is updating password"""
+        hashed_pwd = bcrypt.generate_password_hash(password).decode('UTF-8')
+        self.password = hashed_pwd
+
+        if commit:
+            db.session.commit()
+
+    def get_reset_token(self, expires=500):
+        """get token to reset"""
+        return jwt.encode({'reset_password': self.username, 'exp':time() + expires},
+                          key=os.getenv('SECRET_KEY_FLASK'))
+
+    @staticmethod
+    def verify_reset_token(token):
+        try:
+            username = jwt.decode(token, key=os.getenv('SECRET_KEY_FLASK'))['reset_password']
+            print(username)
+        except Exception as e:
+            print(e)
+            return
+        return User.query.filter_by(username = username).first()
+    
+    @staticmethod
+    def verify_email(email):
+        user = User.query.filter_by(email = email).first()
+        return user
             
 
 class Unauth_Customer(db.Model):

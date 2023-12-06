@@ -1,7 +1,7 @@
 import email_validator
 from flask_wtf import FlaskForm
 from wtforms import StringField, SelectField, PasswordField, BooleanField, IntegerField, SelectMultipleField, RadioField
-from wtforms.validators import DataRequired, Email, Length, URL, Optional
+from wtforms.validators import DataRequired, Email, Length, URL, Optional, EqualTo
 
 
 industry_choices = [
@@ -54,7 +54,7 @@ class OrganizationSignUpForm(FlaskForm):
     province_or_state = StringField('State, or Province', validators=[DataRequired()])
     postal_code = StringField('Postal Code', validators=[DataRequired(), Length(6)])
     contact_number = StringField('Contact Number', validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired()])
+    init_password = PasswordField('Password', validators=[DataRequired()])
 
 class EditOrganizationProfileForm(FlaskForm):
     """form for a company to edit"""
