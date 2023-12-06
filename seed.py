@@ -1,4 +1,6 @@
 from models import User, db
+import jsonpickle
+from linkedlist import LinkedList
 
 """drop all existing tables"""
 db.drop_all()
@@ -17,7 +19,8 @@ WestField = User.signup(
     province_or_state='Alberta',
     contact_number = 5875873874,
     postal_code= 'T5Y6H7',
-    password='helloworld'
+    password='helloworld',
+    to_be_seated = jsonpickle.encode(LinkedList())
 )
 
 MiaHealthCare = User.signup(
@@ -31,7 +34,8 @@ MiaHealthCare = User.signup(
     province_or_state='Alberta',
     contact_number = 5877873874,
     postal_code= 'T4T5H7',
-    password='helloworld'
+    password='helloworld',
+    to_be_seated = jsonpickle.encode(LinkedList())
 )
 
 Kidon = User.signup(
@@ -45,7 +49,8 @@ Kidon = User.signup(
     province_or_state='Alberta',
     contact_number ='7805487643',
     postal_code= 'T5M8H7',
-    password='helloworld'
+    password='helloworld',
+    to_be_seated = jsonpickle.encode(LinkedList())
 )
 
 Winners = User.signup(
@@ -59,7 +64,8 @@ Winners = User.signup(
     province_or_state='Alberta',
     contact_number = 5878765476,
     postal_code= 'T5K0G6',
-    password='helloworld'
+    password='helloworld',
+    to_be_seated = jsonpickle.encode(LinkedList())
 )
 
 db.session.commit()

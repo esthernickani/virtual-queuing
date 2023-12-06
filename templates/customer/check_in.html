@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}Customer Queue{% endblock %}
+
+{% block content %}
+<p>Waitlist status</p>
+<img src="" alt="" class="">
+<div class="">
+    <p>Its your turn! See host to check-in</p>
+    <button><a href="/customer/{{customer.code}}/general_waitlist" class="">View Waitlist</a></button>
+    <button><a href="" class="leave_waitlist">Leave Waitlist</a></button>
+</div>
+{% endblock %}

@@ -1,6 +1,43 @@
 {% extends 'base.html' %}
 {% block title %}Customer Queue{% endblock %}
-<p>Waitlist status</p>
-{% block content %}
 
+{% block content %}
+<p>Waitlist status</p>
+<img src="" alt="" class="">
+<div class="">
+    <p>You're on the waitlist</p>
+    <p>{{customer.tag}} for {{name}} <span class="customer_code">{{customer.code}}</span></p>
+</div>
+<div class="get_directions">
+    <p class="travel-time" >Would you like to get the travel time from your current location to {{organization.username}}?</p>
+    <button><a href="" class="agree_btn">Yes</a></button>
+    <button class="">x</button>
+</div>
+<div class="notification confirm_agree">
+    <p>By clicking "Agree and continue", you agree to vir-que accessing your location. You can always turn this off in the settings toolbar</p>
+</div>
+<div class="">
+    <p>Check in by {{service_time_min}}</p>
+    <p>Estimated seating time {{service_time_min}} - {{service_time_max}}</p>
+    <p>You would be notified via text message when it's your turn</p>
+</div>
+<div class="">
+    <p>You are <b>{{position}}</b> in line</p>
+    <button><a href="/customer/{{customer.code}}/general_waitlist" class="">View Waitlist</a></button>
+    <button><a href="" class="leave_waitlist">Leave Waitlist</a></button>
+</div>
+<div class="notification confirm_leave hidden">
+    <p>By clicking "confirm," you will forfeit your position in the queue.</p>
+    <button><a href="/customer/{{customer.code}}/leave_waitlist">Confirm</a> </button>
+</div>
+<div class="notification form">
+    <h4>Choose your mode of travel</h4>
+     <input type="radio" name="travel-mode" value="Driving">
+     <label for="Driving">Driving</label>
+     <input type="radio" name="travel-mode" value="Walking">
+     <label for="Walking">Walking</label>
+     <input type="radio" name="travel-mode" value="Driving">
+     <label for="Cycling">Cycling</label>
+     <input type="submit" value="Get travel time">
+</div>
 {% endblock %}

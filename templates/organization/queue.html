@@ -1,36 +1,75 @@
-{% extends "base.html" %}
-{% block title %} Start Queue {% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css"
+    />
+    <title>{% block title %} VIR-QUE {% endblock %}</title>
+</head>
+<body>
+    <header>
+        <img src="" alt="" class="logo">
+        <nav class="">
+            <ul>
+                <li><a href="/organization/queue" class="">Queue</a></li>
+                <li><a href="/organization/profile/overview" class="">Profile</a></li>
+                <li><a href="/organization/logout" class="">Log out</a></li></li>
+            </ul>
+        </nav>
+    </header>
+    {% block content %}
+        {% if organization.queue_is_active %}
+            <div class="queue">
+                {% if queue.length == 0 %}
+                    <p>Queue is currently empty</p>
+                {% else %}
+                    <h2>Queue</h2>
+                        {% for customer in queue %}
+                            <div class="customer_card">
+                                <p>{{customer.data['tag']}}</p>
+                                <p><!--icon for name-->Name: {{customer.data['first_name']}} {{customer.data['last_name']}}</p>
+                                <p>Contact number: {{customer.data['contact_number']}}</p>
+                                <p>Email: {{customer.data['email']}}</p>
+                                <p>Time Joined: {{customer.data['time_joined']}}</p>
+                                <button><a href="/organization/{{organization.id}}/dequeue/{{customer.data['code']}}" class="">Dequeue</a></button>
+                                <button><a href="/organization/{{organization.id}}/delete/{{customer.data['code']}}" class="">Delete</a></button>
+                            </div>
+                        {% endfor %}
+                {% endif %}
+            </div>
+            {% if to_be_seated.length != 0 %}
+                <h2>Pending check-in</h2>
+                {% for customer in to_be_seated %}
+                    <div class="customer_card">
+                        <p>{{customer.data['tag']}}</p>
+                        <p>icon for nameName: {{customer.data['first_name']}} {{customer.data['last_name']}}</p>
+                        <p>Contact number: {{customer.data['contact_number']}}</p>
+                        <p>Email: {{customer.data['email']}}</p>
+                        <p>Time Joined: {{customer.data['time_joined']}}</p>
+                        <button><a href="/organization/{{organization.id}}/check_in/{{customer.data['code']}}" class="">Check in</a></button>
+                        <button><a href="/organization/{{organization.id}}/delete/{{customer.data['code']}}" class="">Delete</a></button>
+                    </div>
+                {% endfor %}
+            {% endif %} 
+        {% else %}
+            <form action="" class="activate_queue">
+                <label for="activate">Activate Queue:</label>
+                <input type="radio" name="activate" id="activate" class="">
+                <button id="activate_queue">Start queue</button>
+            </form>
+            <p>Your current approximate wait time is between {{minimum_wait_time}} and {{maximum_wait_time}} minutes</p>
+            <button class="edit_wait_time">Edit</button>
+            <form action="" class="edit_wait_time hidden">
 
-{% block content %}
-    {% if organization.queue_is_active %}
-        <div class="queue">
-            {% if queue.length == 0 %}
-                <p>Queue is currently empty</p>
-            {% else %}
-                <h2>Queue</h2>
-                    {% for customer in queue %}
-                        <div class="customer_card">
-                            <p>{{customer.tag}}</p>
-                            <p><!--icon for name-->Name: {{customer.data['First name']}} {{customer.data['Last name']}}</p>
-                            <p>Contact number: {{customer.data['Contact Number']}}</p>
-                            <p>Email: {{customer.data['email']}}</p>
-                            <button><a href="" class="">Dequeue</a></button>
-                        </div>
-                    {% endfor %}
-            {% endif %}
-        </div>
-    {% else %}
-        <form action="" class="activate_queue">
-            <label for="activate">Activate Queue:</label>
-            <input type="radio" name="activate" id="activate" class="">
-            <button id="activate_queue">Start queue</button>
-        </form>
-        <p>Your current approximate wait time is between {{minimum_wait_time}} and {{maximum_wait_time}} minutes</p>
-        <button class="edit_wait_time">Edit</button>
-        <form action="" class="edit_wait_time hidden">
-
-        </form>
-    {% endif %}
-
-
-{% endblock %}
+            </form>
+        {% endif %}
+    {% endblock %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
+    

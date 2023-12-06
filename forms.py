@@ -56,6 +56,17 @@ class OrganizationSignUpForm(FlaskForm):
     contact_number = StringField('Contact Number', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
 
+class EditOrganizationProfileForm(FlaskForm):
+    """form for a company to edit"""
+    username = StringField("Username", validators = [DataRequired()])
+    company_name = StringField("Company Name", validators = [DataRequired()])
+    street_address = StringField('Street Address', validators = [DataRequired()])
+    street_address2 = StringField('Street Address line 2')
+    city = StringField('city', validators=[DataRequired()])
+    province_or_state = StringField('State, or Province', validators=[DataRequired()])
+    postal_code = StringField('Postal Code', validators=[DataRequired(), Length(6)])
+    contact_number = StringField('Contact Number', validators=[DataRequired()])
+
 class StartQueueForm(FlaskForm):
     """Forms to start a queue"""
     activate_queue = RadioField('Activate Queue', validators=[DataRequired()])
@@ -74,7 +85,7 @@ class CustomerSignUpForm(FlaskForm):
 class OrganizationLoginForm(FlaskForm):
     """Form to login as an organization"""
     username = StringField("Username", validators = [DataRequired()])
-    password = PasswordField('String', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
 
 class CustomerLoginForm(FlaskForm):
     """Form to login as a user"""

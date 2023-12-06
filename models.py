@@ -117,7 +117,7 @@ class User(UserMixin, db.Model):
     )
     
     @classmethod
-    def signup(cls, username, company_name, email, industry, street_address, street_address2, city, province_or_state, postal_code, contact_number, password):
+    def signup(cls, username, company_name, email, industry, street_address, street_address2, city, province_or_state, postal_code, contact_number, password, to_be_seated):
         """sign up user, hashes password and adds user to system"""
         hashed_pwd = bcrypt.generate_password_hash(password).decode('UTF-8')
 
@@ -132,7 +132,8 @@ class User(UserMixin, db.Model):
             province_or_state = province_or_state,
             contact_number = contact_number,
             postal_code = postal_code,
-            password = hashed_pwd
+            password = hashed_pwd,
+            to_be_seated = to_be_seated
         )
 
         db.session.add(organization)
@@ -149,6 +150,8 @@ class User(UserMixin, db.Model):
                 return user
             else:
                 return False
+            
+    customer = db.relationship('Unauth_Customer', backref="organization", cascade="all, delete-orphan")
             
 
 class Unauth_Customer(db.Model):
@@ -174,17 +177,30 @@ class Unauth_Customer(db.Model):
     )
 
     code = db.Column(
-        db.String,
+        db.Integer,
         nullable = False
     )
 
     contact_number = db.Column(
-        db.Integer()
+        db.BIGINT(), 
+        nullable = False,
     )
 
     organization_id = db.Column(
-        
+        db.Integer,
+        db.ForeignKey('organizations.id')
     )
+
+    tag = db.Column(
+        db.String,
+        nullable = False
+    )
+
+    status = db.Column(
+        db.String,
+        nullable = False
+    )
+
 
 
 def connect_db(app):

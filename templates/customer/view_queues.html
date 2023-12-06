@@ -2,6 +2,7 @@
 {% block title %}Queues{% endblock %}
 
 {% block content %}
+  <body>
     <p>Click on a queue to join</p>
     <div class="organizations">
     {% for organization in organizations %}
@@ -26,8 +27,8 @@
         <input type="text" name="last_name" id="last_name" class="">
         <label for="email">Email:</label>
         <input type="text" name="email" id="email" class="">
-        <label for="contact_number">Contact Number:</label>
-        <input type="number" name="contact_number" id="contact_number" class="">
+        <label for="phone">Contact Number:</label>
+        <input id="phone" type="tel" name="phone" />
         <label for="group_size">How many individuals are in your group:</label>
         <input type="number" name="group_size" id="group_size" class="">
         <button id="submit_join_queue_form">Join queue</button>
@@ -35,4 +36,8 @@
     <div class="test_customer">
       <p class="cus_text"></p>
     </div>
+
+  
+  </body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
 {% endblock %}

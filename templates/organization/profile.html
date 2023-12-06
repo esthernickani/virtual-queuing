@@ -1,0 +1,48 @@
+{% extends 'organization/queue.html'%}
+{%block title%}Queue{% endblock %}
+
+{% block content %}
+    <div class="side-main-content">
+        <div class="side-nav">
+            <span>Profile</span>
+            <span>
+                <img src="" alt="" class="profile-icon">
+                <a href="" class="">Profile</a>
+            </span>
+            <span>
+                <img src="" alt="" class="queue-preference-icon">
+                <a href="" class="">Queue Preferences</a>
+            </span>
+            <span>
+                <img src="" alt="" class="security-icon">
+                <a href="" class="">Security</a>
+            </span>
+        </div>
+        <div class="main-content">
+            <div class="">
+                <h2>Profile</h2>
+                <button class=""><a href="/organization/profile/overview/edit" class="">Edit</a></button>
+            </div>
+            <span class="info-section">
+                <h5>Username</h5>
+                <p>{{organization.username}}</p>
+            </span>
+            <span class="info-section">
+                <h5>Company Name</h5>
+                <p>{{organization.compnay_name}}</p>
+            </span>
+            <span class="info-section">
+                <h5>Email</h5>
+                <p>{{organization.email}}</p>
+            </span>
+            <span class="info-section">
+                <h5>Phone number</h5>
+                <p>{{organization.contact_number}}</p>
+            </span>
+            <span class="info-section">
+                <h5>Address</h5>
+                <p>{{organization.street_address}}</p>
+            </span>
+        </div>
+    </div>
+{% endblock %}

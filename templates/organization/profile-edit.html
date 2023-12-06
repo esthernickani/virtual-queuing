@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Organization Login {% endblock %}
+{% block title %}Edit Profile{% endblock %}
 
 {% block content %}
     <form method="POST" id="organization_login_form">
@@ -13,8 +13,7 @@
             {{ field(placeholder=field.label.text, class="form-control") }}
         {% endfor %}
 
-        <button class="btn btn-primary btn-lg btn-block">Login</button>
+        <button class="btn btn-primary btn-lg btn-block">Save changes</button>
     </form>
-    <p><a href="" class="">Forgot Password?</a></p>
-    <p>Don't have an account yet? <a href="/organization/signup" class="">Sign up</a></p>
-{% endblock %}
+    <button><a href="/organization/profile/overview" class="">Cancel</a></button>
+{% endblock%}

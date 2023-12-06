@@ -39,6 +39,7 @@ class LinkedList:
             return
         elif self.head == self.tail:
             removed_item = self.tail.data
+            self.head = None
             self.tail = None
             self.length = 0
         else:
@@ -103,6 +104,24 @@ class LinkedList:
                 linked_list_list.append(current_node.data)
                 current_node = current_node.next
         return f"{linked_list_list}"
+    
+    def get_position(self, val):
+        """get the position of an element in a linked list"""
+        if self.length == 0:
+            return "Node not present"
+        
+        current = self.head
+        position = 0
+
+        while current:
+            if current.data == val:
+                return position
+            current = current.next
+            position += 1
+
+        return -1
+                
+
     
     """def __repr__(self):
         return a human readable version of linked list"""
