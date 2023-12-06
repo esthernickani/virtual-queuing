@@ -1,4 +1,4 @@
-from api_secrets import mapbox_api_secret_key, twilio_auth_token, twilio_account_sid
+from api_secret_codes import mapbox_api_secret_key, twilio_auth_token, twilio_account_sid
 import os
 import twilio
 from twilio.rest import Client
