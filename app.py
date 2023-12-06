@@ -14,6 +14,7 @@ from flask_socketio import SocketIO, emit, join_room, leave_room, send
 from api_requests import send_dequeue_message, send_join_queue_message
 from flask_mail import Mail, Message
 from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identity
+from config import Configuration
 
 from linkedlist import LinkedList, Node
 
@@ -22,6 +23,10 @@ app = Flask(__name__, template_folder = "templates")
 
 
 mail = Mail(app)
+
+app.config.from_object(Configuration())
+secret_key = app.config['SECRET_KEY']
+print(secret_key)
 
 #create an instance of socket io
 socketio = SocketIO(app)
