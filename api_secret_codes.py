@@ -1,3 +1,0 @@
-mapbox_api_secret_key = 'pk.eyJ1IjoiZXN0aGVybmlja2FuaSIsImEiOiJjbG9hc3hjdjAwZ3h5Mmxxb3MyMzRrcGVwIn0.glj25VLjIBKeVIi-MPI4Kg' 
-twilio_auth_token = 'aef3eaf4191931f7826589cdf161367e'
-twilio_account_sid = 'ACa29c3cab635778b82f12eb8ff8c08ef5'
