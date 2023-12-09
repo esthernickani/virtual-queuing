@@ -235,6 +235,8 @@ class Unauth_Customer(db.Model):
         nullable = False
     )
 
+def __repr__(self):
+        return f"<User #{self.id}: {self.username}, {self.email}>"
 
 
 def connect_db(app):

@@ -26,13 +26,28 @@
             </nav>
         </header>
         <div class="flash_message">
-            {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                    <ul class="flashes">
-                        {% for message in messages %}
-                            <li>{{message}}</li>
-                        {% endfor %}
-                    </ul>
+            {% with errors = get_flashed_messages(category_filter=["error"]) %}
+                {% if errors %}
+                <div class="alert-message-error">
+                <ul>
+                    {% for msg in errors %}
+                    <li>{{ msg }}</li>
+                    {% endfor -%}
+                </ul>
+                </div>
+                {% endif %}
+            {% endwith %}
+        </div>
+        <div class="flash_message">
+            {% with successes = get_flashed_messages(category_filter=["success"]) %}
+                {% if successes %}
+                <div class="alert-message-success">
+                <ul>
+                    {% for msg in successes %}
+                    <li>{{ msg }}</li>
+                    {% endfor -%}
+                </ul>
+                </div>
                 {% endif %}
             {% endwith %}
         </div>
@@ -47,6 +62,11 @@
                 <div class="queue">
                     {% if queue.length == 0 %}
                         <h2>Queue is currently empty</h2>
+                        <form action="/organization/deactivate_queue" class="deactivate_queue" method="POST">
+                            <label for="deactivate">Deactivate Queue:</label>
+                            <input type="radio" name="deactivate" id="deactivate" class="" required>
+                            <button id="deactivate_queue">Deactivate</button>
+                        </form>
                     {% else %}
                         <h2>Queue</h2>
                         <div class="queues-grid">
@@ -68,6 +88,11 @@
                                     </div>
                                 </div>
                             {% endfor %}
+                            <form action="/organization/deactivate_queue" class="deactivate_queue" method="POST">
+                                <label for="activate">Deactivate Queue:</label>
+                                <input type="radio" name="deactivate" id="deactivate" class="">
+                                <button id="deactivate_queue">Deactivate</button>
+                            </form>
                         </div>
                     {% endif %}
                 </div>

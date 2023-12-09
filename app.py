@@ -428,6 +428,25 @@ def reset_password():
     
         return redirect('/organization/profile/security')
 
+@app.route('/organization/deactivate_queue', methods = ['GET', 'POST'])
+@login_required
+def deactivate_queue():
+    """deactivate queue, get form data, check queue .length as organization cannot deactivate a full queue"""
+    if request.method == 'POST':
+        if request.form.get('deactivate') == 'on':
+            organization = User.query.get_or_404(current_user.get_id())
+            queue = jsonpickle.decode(organization.queue)
+            if queue.length != 0:
+                flash('Empty queue before deactivating', 'error')
+                return redirect('/organization/queue')
+            else:
+                organization.queue_is_active = False
+                db.session.commit()
+                flash('Queue successfully deactivated', "success")
+                return redirect('/organization/queue')
+    return
+
+
 
 #CUSTOMER----------------------------------------------------------------------
 @socketio.on("join_queue")
