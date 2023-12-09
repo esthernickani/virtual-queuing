@@ -4,6 +4,8 @@ from models import User, db, Unauth_Customer
 from flask import session
 from datetime import datetime, timedelta
 from num2words import num2words
+from geopy.geocoders import Nominatim
+import pdb
 import random
 import jsonpickle
 
@@ -42,8 +44,16 @@ def get_current_time():
     current_time = now.strftime("%H:%M")
     return current_time
 
+def get_wait_time(wait_time):
+    """get wait time values from db"""
+    wait_time_param = jsonpickle.decode(wait_time)
+    min_wait_time = wait_time_param['min']
+    max_wait_time = wait_time_param['max']
+
+    return (min_wait_time, max_wait_time)
+
 def get_current_wait_time(wait_time):
-    """break waittime into dict to be accessible"""
+    """break waittime into dict to be accessible and get the time they would be attended to approximately"""
     wait_time_param = jsonpickle.decode(wait_time)
     now = datetime.now()
     current_time = now.strftime("%H:%M")
@@ -55,7 +65,15 @@ def get_current_wait_time(wait_time):
 
     return (new_time_min, new_time_max)
 
-def get_position(organization, customer_code):
+def get_position(queue, customer_code):
+    """using linked list function get customers position in queue"""
+    position = 0
+    for item in queue:
+        if item.data['code'] == customer_code:
+            position = queue.get_position(item)
+    return position
+
+def get_position_ordinal(organization, customer_code):
     """using linked list function get customers position in queue"""
     position = 0
     queue = jsonpickle.decode(organization.queue)
@@ -71,3 +89,23 @@ def remove_customer(customer_position_in_queue, queue):
         else:
             customer = queue.removeAtSpecificIdx(customer_position_in_queue)
             return customer
+
+def create_wait_time_for_db(min_waittime, max_waittime):
+    #function to get wait time
+    approx_wait_time = {
+        #appromimate wait time range in minutes
+        'min' : min_waittime,
+        'max' : max_waittime
+    }
+
+    return jsonpickle.encode(approx_wait_time)
+
+def get_coords(organization, data_from_js):
+    """get coords of organization and customer"""
+    geolocator = Nominatim(user_agent="virque")
+    organization_location = geolocator.geocode(organization.street_address)
+    print(organization_location)
+    
+    customer_coords = (data_from_js['latitude'], data_from_js['longitude'])
+    organization_coords = (organization_location.latitude, organization_location.longitude)
+    return (customer_coords, organization_coords)

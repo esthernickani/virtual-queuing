@@ -166,13 +166,14 @@ class User(UserMixin, db.Model):
 
     def get_reset_token(self, expires=500):
         """get token to reset"""
+        print(os.getenv('SECRET_KEY'))
         return jwt.encode({'reset_password': self.username, 'exp':time() + expires},
-                          key=os.getenv('SECRET_KEY_FLASK'))
+                          key=os.getenv('SECRET_KEY'))
 
     @staticmethod
     def verify_reset_token(token):
         try:
-            username = jwt.decode(token, key=os.getenv('SECRET_KEY_FLASK'))['reset_password']
+            username = jwt.decode(token, key=os.getenv('SECRET_KEY'))['reset_password']
             print(username)
         except Exception as e:
             print(e)
@@ -204,7 +205,9 @@ class Unauth_Customer(db.Model):
     )
 
     email = db.Column(
-        db.String(100)
+        db.String(100),
+        nullable = False,
+        unique = True
     )
 
     code = db.Column(

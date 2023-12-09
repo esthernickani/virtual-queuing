@@ -1,6 +1,6 @@
 import email_validator
 from flask_wtf import FlaskForm
-from wtforms import StringField, SelectField, PasswordField, BooleanField, IntegerField, SelectMultipleField, RadioField
+from wtforms import StringField, SelectField, PasswordField, BooleanField, IntegerField, SelectMultipleField, RadioField, HiddenField
 from wtforms.validators import DataRequired, Email, Length, URL, Optional, EqualTo
 
 

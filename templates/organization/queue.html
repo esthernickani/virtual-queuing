@@ -8,68 +8,100 @@
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css"
     />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;700&display=swap" rel="stylesheet">
     <title>{% block title %} VIR-QUE {% endblock %}</title>
 </head>
 <body>
-    <header>
-        <img src="" alt="" class="logo">
-        <nav class="">
-            <ul>
-                <li><a href="/organization/queue" class="">Queue</a></li>
-                <li><a href="/organization/profile/overview" class="">Profile</a></li>
-                <li><a href="/organization/logout" class="">Log out</a></li></li>
-            </ul>
-        </nav>
-    </header>
-    {% block content %}
-        {% if organization.queue_is_active %}
-            <div class="queue">
-                {% if queue.length == 0 %}
-                    <p>Queue is currently empty</p>
-                {% else %}
-                    <h2>Queue</h2>
-                        {% for customer in queue %}
-                            <div class="customer_card">
-                                <p>{{customer.data['tag']}}</p>
-                                <p><!--icon for name-->Name: {{customer.data['first_name']}} {{customer.data['last_name']}}</p>
-                                <p>Contact number: {{customer.data['contact_number']}}</p>
-                                <p>Email: {{customer.data['email']}}</p>
-                                <p>Time Joined: {{customer.data['time_joined']}}</p>
-                                <button><a href="/organization/{{organization.id}}/dequeue/{{customer.data['code']}}" class="">Dequeue</a></button>
-                                <button><a href="/organization/{{organization.id}}/delete/{{customer.data['code']}}" class="">Delete</a></button>
-                            </div>
+    <div class="organization-body">
+        <header class="organization_header">
+            <span class="logo">VIR-QUE</span>
+            <nav class="nav-bar">
+                <ul>
+                    <li><a href="/organization/queue" class="">Queue</a></li>
+                    <li><a href="/organization/profile/overview" class="">Profile</a></li>
+                    <li><a href="/organization/logout" class="">Log out</a></li></li>
+                </ul>
+            </nav>
+        </header>
+        <div class="flash_message">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <ul class="flashes">
+                        {% for message in messages %}
+                            <li>{{message}}</li>
                         {% endfor %}
+                    </ul>
                 {% endif %}
+            {% endwith %}
+        </div>
+        {% block content %}
+        <div class="queue-main-content">
+            <div class="queue-wait-time">
+                <p>Your current approximate wait time is between {{minimum_wait_time}} and {{maximum_wait_time}} minutes</p>
+                <button class="edit_wait_time"><a href="/organization/profile/queue_preferences/edit" class="">Edit wait time</a></button>
+             </div>
+             <div class="queue-to-be-seated">
+            {% if organization.queue_is_active %}
+                <div class="queue">
+                    {% if queue.length == 0 %}
+                        <h2>Queue is currently empty</h2>
+                    {% else %}
+                        <h2>Queue</h2>
+                        <div class="queues-grid">
+                            {% for customer in queue %}
+                                <div class="customer_card">
+                                    <div class="position">
+                                        <p><b>{{queue.get_position(customer) + 1}}</b></p>
+                                    </div>
+                                    <div class="rest_info">
+                                        <p>{{customer.data['tag']}}</p>
+                                        <p><b>{{customer.data['first_name']}} {{customer.data['last_name']}}</b></p>
+                                        <p>Joined {{customer.data['time_joined']}}</p>
+                                        <p><svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path fill="#FAFAFA" d="M164.9 24.6c-7.7-18.6-28-28.5-47.4-23.2l-88 24C12.1 30.2 0 46 0 64C0 311.4 200.6 512 448 512c18 0 33.8-12.1 38.6-29.5l24-88c5.3-19.4-4.6-39.7-23.2-47.4l-96-40c-16.3-6.8-35.2-2.1-46.3 11.6L304.7 368C234.3 334.7 177.3 277.7 144 207.3L193.3 167c13.7-11.2 18.4-30 11.6-46.3l-40-96z"/></svg> {{customer.data['contact_number']}}</p>
+                                        <p><svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path fill="#FAFAFA" d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48H48zM0 176V384c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V176L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z"/></svg> {{customer.data['email']}}</p>
+                                        <div class="card-btns">
+                                            <button><a href="/organization/{{organization.id}}/dequeue/{{customer.data['code']}}" class="">Dequeue</a></button>
+                                            <button><a href="/organization/{{organization.id}}/delete/{{customer.data['code']}}" class="">Delete</a></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                {% if to_be_seated.length != 0 %}
+                    <div class="pending_check-in">
+                    <h2>Pending check-in</h2>
+                    {% for customer in to_be_seated %}
+                        <div class="seated_customer_card">
+                            <p>{{customer.data['tag']}}</p>
+                                        <p><b>{{customer.data['first_name']}} {{customer.data['last_name']}}</b></p>
+                                        <p>Joined {{customer.data['time_joined']}}</p>
+                                        <p><svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path fill="#FAFAFA" d="M164.9 24.6c-7.7-18.6-28-28.5-47.4-23.2l-88 24C12.1 30.2 0 46 0 64C0 311.4 200.6 512 448 512c18 0 33.8-12.1 38.6-29.5l24-88c5.3-19.4-4.6-39.7-23.2-47.4l-96-40c-16.3-6.8-35.2-2.1-46.3 11.6L304.7 368C234.3 334.7 177.3 277.7 144 207.3L193.3 167c13.7-11.2 18.4-30 11.6-46.3l-40-96z"/></svg> {{customer.data['contact_number']}}</p>
+                                        <p><svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path fill="#FAFAFA" d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48H48zM0 176V384c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V176L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z"/></svg> {{customer.data['email']}}</p>
+                                        <div class="card-btns">
+                                            <button><a href="/organization/{{organization.id}}/check-in/{{customer.data['code']}}" class="">Check in</a></button>
+                                            <button><a href="/organization/{{organization.id}}/delete/{{customer.data['code']}}" class="">Delete</a></button>
+                                        </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                {% endif %} 
             </div>
-            {% if to_be_seated.length != 0 %}
-                <h2>Pending check-in</h2>
-                {% for customer in to_be_seated %}
-                    <div class="customer_card">
-                        <p>{{customer.data['tag']}}</p>
-                        <p>icon for nameName: {{customer.data['first_name']}} {{customer.data['last_name']}}</p>
-                        <p>Contact number: {{customer.data['contact_number']}}</p>
-                        <p>Email: {{customer.data['email']}}</p>
-                        <p>Time Joined: {{customer.data['time_joined']}}</p>
-                        <button><a href="/organization/{{organization.id}}/check_in/{{customer.data['code']}}" class="">Check in</a></button>
-                        <button><a href="/organization/{{organization.id}}/delete/{{customer.data['code']}}" class="">Delete</a></button>
-                    </div>
-                {% endfor %}
-            {% endif %} 
-        {% else %}
-            <form action="" class="activate_queue">
-                <label for="activate">Activate Queue:</label>
-                <input type="radio" name="activate" id="activate" class="">
-                <button id="activate_queue">Start queue</button>
-            </form>
-            <p>Your current approximate wait time is between {{minimum_wait_time}} and {{maximum_wait_time}} minutes</p>
-            <button class="edit_wait_time">Edit</button>
-            <form action="" class="edit_wait_time hidden">
-
-            </form>
-        {% endif %}
-    {% endblock %}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+            {% else %}
+                <form action="" class="activate_queue">
+                    <label for="activate">Activate Queue:</label>
+                    <input type="radio" name="activate" id="activate" class="">
+                    <button id="activate_queue">Start queue</button>
+                </form>
+            {% endif %}
+        </div>
+        {% endblock %}
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+        <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    </div>
 </body>
 </html>
     

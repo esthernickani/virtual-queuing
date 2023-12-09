@@ -8,36 +8,63 @@
      rel="stylesheet"
      href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css"
    />
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;700&display=swap" rel="stylesheet">
     <title>{% block title %} VIR-QUE {% endblock %}</title>
 
 </head>
-{% block content %}
-    <body>
-        <header>
-            <img src="" alt="" class="logo">
-        </header>
+<body>
+    <header>
+        <span class="logo">VIR-QUE</span>
         <div class="flash_message">
-            {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                    <ul class="flashes">
-                        {% for message in messages %}
-                            <li>{{message}}</li>
-                        {% endfor %}
-                    </ul>
+            {% with errors = get_flashed_messages(category_filter=["error"]) %}
+                {% if errors %}
+                <div class="alert-message-error">
+                <ul>
+                    {% for msg in errors %}
+                    <li>{{ msg }}</li>
+                    {% endfor -%}
+                </ul>
+                </div>
                 {% endif %}
             {% endwith %}
         </div>
-        <div class="body-main-top">
-            <img src="" alt="" class="logo">
-            <p>Welcome to VIR-QUE - Simplifying Queueing for you</p>
-            <p>Choose your role to get started:</p>
-            <button><a href="/organization/login" class="">I represent an Organization</a></button>
-            <button><a href="" class="">Join a Queue</a></button>
-            <form action="/customer/check_code" method="POST">
-                <label for="code" id="">Already in a queue? Enter your code:</label>
-                <input type="number" id="code" name="code">
-                <button type="submit">Submit</button>
-            </form>
+        <div class="flash_message">
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="alert-message-success">
+                    <ul class=flashes >
+                    {% for message in messages %}
+                    <li>{{ message }}</li>
+                    {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+            {% endwith %}
+        </div>
+        
+    </header>
+{% block content %}
+        <div class="body-main">
+            <div class="main-center-left">
+                <h1>VIR-QUE</h1>
+                <p class="simplify">Simplifying Queueing for you</p>
+                <div class="btns">
+                    <button class="org-btn"><a href="/organization/login" class="represent-org">I represent an Organization</a></button>
+                    <button class="queue-join-btn"><a href="/customer/view_queues" class="join-queue-home">Join a Queue</a></button>
+                </div>
+                <form action="/customer/check_code" method="POST" class="home-enter-code-form">
+                    <label for="code" id="label-form-home">Already in a queue?</label>
+                    <div class="input-submit">
+                        <input type="number" id="code" name="code" placeholder="Enter your code here" required>
+                        <button type="submit" id="home-submit">Go</button>
+                    </div>
+                </form>
+            </div>
+            <div class="main-center-right">
+                <img src="/static/images/illustration-devices.svg" alt="laptop and phone" class="laptop-phone">
+            </div>
         </div>
         <div class="body-main-bottom">
             <div class="feature-cards">
@@ -45,7 +72,9 @@
             </div>
         </div>
         <footer>
-            <p>copyright info</p>
+            <div class="copyright_info">
+                <p>&copy; 2023 VIR-QUE. All rights reserved.</p>
+            </div>
         </footer>
     </body>
 {% endblock %}

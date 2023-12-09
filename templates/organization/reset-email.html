@@ -1,0 +1,16 @@
+{% extends 'organization/queue.html'%}
+{%block title%}VIR-QUE{% endblock %}
+
+{% block content %}
+    <h2>Change Email</h2>
+    <p>Previous Email: {{organization.email}}</p>
+        <form action="/organization/profile/security/reset-email" method="POST">
+            <label for="email-address">New email address:</label>
+            <input type="email" name="email-address" id="email-address" required>
+            <label for="email-address-confirm">Confirm new email address:</label>
+            <input type="email" name="email-address-confirm" id="email-address-confirm" required>
+            <p id="message"></p>
+            <input type="submit" value="Save changes">
+        </form>
+        <button><a href="" class="">Cancel</a></button>
+{% endblock %}

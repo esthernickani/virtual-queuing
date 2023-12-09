@@ -1,0 +1,15 @@
+{% extends 'organization/queue.html'%}
+{%block title%}VIR-QUE{% endblock %}
+
+{% block content %}
+    <h2>Security</h2>
+    <div class="change_email">
+        <h3>Change email</h3>
+        {{organization.email}}
+        <button><a href="/organization/profile/security/reset-email" class="">Edit</a> </button>
+    </div>
+    <div class="change_password">
+        <h3>Change password</h3>
+        <button><a href="/organization/profile/security/reset-password" class="">Edit</a> </button>
+    </div>
+{% endblock %}

@@ -2,6 +2,7 @@
 {% block title %}Organization Signup {% endblock %}
 
 {% block content %}
+<div class="body-signup">
     <form method="POST" id="organization_signup_form">
         {{ form.hidden_tag() }}
 
@@ -16,4 +17,5 @@
         <button class="btn btn-primary btn-lg btn-block">Sign up!</button>
     </form>
     <p>Already have an account? <a href="/organization/signup" class="">Login</a></p>
+</div>
 {% endblock %}

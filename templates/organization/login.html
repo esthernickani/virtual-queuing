@@ -2,19 +2,23 @@
 {% block title %}Organization Login {% endblock %}
 
 {% block content %}
-    <form method="POST" id="organization_login_form">
-        {{ form.hidden_tag() }}
+    <div class="body-login">
+        <h2>Sign in</h2>
+        <form method="POST" id="organization_login_form">
+            {{ form.hidden_tag() }}
 
-        {% for field in form if field.widget.input_type != 'hidden' %}
-            {% for error in field.errors %}
-                <span class="text-danger">{{ error }}</span>
+            {% for field in form if field.widget.input_type != 'hidden' %}
+            <div class="label-input-login-form">
+                {% for error in field.errors %}
+                    <span class="text-danger">{{ error }}</span>
+                {% endfor %}
+                {{ field.label.text}}:
+                {{ field(placeholder=field.label.text, class="form-control") }}
+            </div>
             {% endfor %}
-            {{ field.label.text}}
-            {{ field(placeholder=field.label.text, class="form-control") }}
-        {% endfor %}
 
-        <button class="btn btn-primary btn-lg btn-block">Login</button>
-    </form>
-    <p><a href="/organization/security/forgot-password" class="">Forgot Password?</a></p>
-    <p>Don't have an account yet? <a href="/organization/signup" class="">Sign up</a></p>
+            <button class="sign-in-btn">Sign in</button>
+        </form>
+        <p  class="forgot-sign-up-link"><a href="/organization/security/forgot-password" class="">Forgot Password</a>    |    <a href="/organization/signup" class="">Sign up</a></p>
+    </div>
 {% endblock %}

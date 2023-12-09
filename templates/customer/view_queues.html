@@ -3,41 +3,93 @@
 
 {% block content %}
   <body>
-    <p>Click on a queue to join</p>
-    <div class="organizations">
-    {% for organization in organizations %}
-        <button class="organization_name">{{organization.username}}</button>
-    {% endfor %}
+    <div class="all-queues">
+    <div class="organizations-flex">
+      <div class="organizations">
+        {% if organization_card_detail %}
+        <input type="text" placeholder="Search.." class="search_queues">
+            {% for organization in organization_card_detail %}
+                <div class="organization_with_queue organization_card">
+                    <h3 class="organization-card-title">{{organization['name']}}</h3>
+                    <p class="organization-card-address"><svg xmlns="http://www.w3.org/2000/svg" height="16" width="18" viewBox="0 0 576 512"><path fill="#FAFAFA" d="M528 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h480c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48zm-352 96c35.3 0 64 28.7 64 64s-28.7 64-64 64-64-28.7-64-64 28.7-64 64-64zm112 236.8c0 10.6-10 19.2-22.4 19.2H86.4C74 384 64 375.4 64 364.8v-19.2c0-31.8 30.1-57.6 67.2-57.6h5c12.3 5.1 25.7 8 39.8 8s27.6-2.9 39.8-8h5c37.1 0 67.2 25.8 67.2 57.6v19.2zM512 312c0 4.4-3.6 8-8 8H360c-4.4 0-8-3.6-8-8v-16c0-4.4 3.6-8 8-8h144c4.4 0 8 3.6 8 8v16zm0-64c0 4.4-3.6 8-8 8H360c-4.4 0-8-3.6-8-8v-16c0-4.4 3.6-8 8-8h144c4.4 0 8 3.6 8 8v16zm0-64c0 4.4-3.6 8-8 8H360c-4.4 0-8-3.6-8-8v-16c0-4.4 3.6-8 8-8h144c4.4 0 8 3.6 8 8v16z"/></svg> {{organization.address}}</p>
+                    <p class="organization-card-spots">{{organization['length_of_queue']}} spots are filled.</p> 
+                        <p class="small">Based on all group sizes</p>
+                    {% if organization['length_of_queue'] == 0 %}
+                    <p class="organization-card-wait">No need to wait!</p>
+                    <p class="small">The current wait time is zero.</p>
+                    {% else %}
+                    <p>Approximate wait-time: {{organization['wait_time'][0]}} - {{organization['wait_time'][1]}} minutes</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <h1 class="no-queues">No queues currently, check again later</h1>
+        {% endif %}
+      </div>
     </div>
-    <form action="" class="hidden join_queue_form">
-        <fieldset>
-            <legend>Individual or Group:</legend>
-            <div>
-              <input type="radio" id="individual" name="size" value="Individual" checked />
-              <label for="individual">Individual</label>
+    </div>
+    <div class="join-queue-forms">
+    <form action="" class="individual_or_group hidden">
+        <h2>Let us know</h2>
+        <div class="radio-elements-form">
+            <div class="individual">
+                <input type="radio" name="customer-size" value="individual" id="individual" required>
+                <label for="individual">Individual</label>
             </div>
-            <div>
-              <input type="radio" id="group" name="size" value="Group" />
-              <label for="group">Group</label>
+            <div class="group">
+                <input type="radio" name="customer-size" value="group" id="group" required>
+                <label for="group">Group</label>
             </div>
-        </fieldset>
-        <label for="first_name">First Name:</label>
-        <input type="text" name="first_name" id="first_name" class="">
-        <label for="last_name">Last Name:</label>
-        <input type="text" name="last_name" id="last_name" class="">
-        <label for="email">Email:</label>
-        <input type="text" name="email" id="email" class="">
-        <label for="phone">Contact Number:</label>
-        <input id="phone" type="tel" name="phone" />
-        <label for="group_size">How many individuals are in your group:</label>
-        <input type="number" name="group_size" id="group_size" class="">
-        <button id="submit_join_queue_form">Join queue</button>
+            <input type="submit" id="get_individual_or_group" value="Next">
+        </div>
     </form>
-    <div class="test_customer">
-      <p class="cus_text"></p>
+        <form action="" class="join-queue-form hidden">
+                <input type="text" name="first_name" id="first_name" class="" placeholder="First Name">
+                <input type="text" name="last_name" id="last_name" class="" placeholder="Last Name">
+                <input type="text" name="email" id="email" class="" placeholder="email">
+                <input id="phone" type="tel" name="phone" />
+            <div class="group-size hidden">
+                <label for="group_size" class="">How many individuals are in your group:</label>
+                <input type="number" name="group_size" id="group_size" class="">
+            </div>
+            <span class="organization-name-in-form hidden"></span>
+            <button id="submit_join_queue_form">Join queue</button>
+        </form>
     </div>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
 
   
+    <div class="join-queue-forms hidden">
+      <form action="" class="individual_or_group">
+          <h2>Let us know</h2>
+          <div class="radio-elements-form">
+              <div class="individual">
+                  <input type="radio" name="customer-size" value="individual" id="individual" required>
+                  <label for="individual">Individual</label>
+              </div>
+              <div class="group">
+                  <input type="radio" name="customer-size" value="group" id="group" required>
+                  <label for="group">Group</label>
+              </div>
+              <input type="submit" id="get_individual_or_group" value="Next">
+          </div>
+          
+      </form>
+          <form action="" class="join-queue-form hidden">
+                  <input type="text" name="first_name" id="first_name" class="" placeholder="First Name">
+                  <input type="text" name="last_name" id="last_name" class="" placeholder="Last Name">
+                  <input type="text" name="email" id="email" class="" placeholder="email">
+                  <input id="phone" type="tel" name="phone" />
+              <div class="group-size hidden">
+                  <label for="group_size" class="">How many individuals are in your group:</label>
+                  <input type="number" name="group_size" id="group_size" class="">
+              </div>
+              <span class="organization-name-in-form hidden"></span>
+              <button id="submit_join_queue_form">Join queue</button>
+          </form>
+      </div>
   </body>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+  
 {% endblock %}
