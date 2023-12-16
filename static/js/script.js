@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", (e) => {
 
             
 
-            const response = await fetch(`/customer/${customerCode.textContent}/directions`, {
+            const response = await axios.get(`/customer/${customerCode.textContent}/directions`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -231,9 +231,7 @@ document.addEventListener("DOMContentLoaded", (e) => {
         })
     }
 
-    if (individualOrGroupForm) {
-        individualOrGroupForm.addEventListener('submit', showCustomerInfoForm)
-    }
+    individualOrGroupForm ? individualOrGroupForm.addEventListener('submit', showCustomerInfoForm) : null
 
     function connectCustomerToSocket(e) {
         //function to connect customer to socket to join queue
@@ -284,6 +282,60 @@ document.addEventListener("DOMContentLoaded", (e) => {
         submitJoinQueueForm.addEventListener('click', connectCustomerToSocket)
     }
 
+    //on search for queues, hide the cards that are not being searched for 
+
+    const orgWithQueueCard = document.querySelectorAll('.organization_with_queue')
+    let organizationNames = []
+
+    if (orgWithQueueCard) {
+        /*get organization names from the DOM*/
+        orgWithQueueCard.forEach(orgCard => {
+            organizationNames.push(orgCard.children[0].innerText) 
+        })
+        console.log(organizationNames)
+    }
+
+    //get input bar
+    const searchQueuesInput = document.querySelector('#search_queues')
+
+    //filter through queue to get what is being searched
+    const filterQueue = e => {
+        e.preventDefault()
+        
+        let queuesForCustomer = organizationNames.filter(organizationName => {
+            return organizationName.includes(searchQueuesInput.value)
+        })
+
+        console.log(queuesForCustomer)
+        orgWithQueueCard.forEach(orgCard => { 
+            if(!(queuesForCustomer.includes(orgCard.children[0].innerText)) && !(orgCard.classList.contains('hidden'))) {
+                orgCard.classList.add('hidden')
+            }
+        })
+    }
+
+    searchQueuesInput? searchQueuesInput.addEventListener('keyup', filterQueue) : null
+
+    //on click of profile, add underline to what is currently being shown
+    const profileLink = document.querySelector('#profile-link')
+    const securityLink = document.querySelector('#security-link')
+
+    const toggleUnderline = e => {
+        //toggle underline between profile and security
+        let targetSpan = e.target.parentElement.children[1];
+        targetSpan.classList.add('underline');
+
+        if (targetSpan.innerText == 'Profile') {
+            securityLink.children[1].classList.remove('underline')
+        } else if (targetSpan.innerText == 'Security') {
+            profileLink.children[1].classList.remove('underline')
+        }
+
+    }
+
+    profileLink ? profileLink.addEventListener('click', toggleUnderline) : null
+    securityLink ? securityLink.addEventListener('click', toggleUnderline) : null
+    
 
 })
 

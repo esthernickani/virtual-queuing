@@ -1,4 +1,4 @@
-"""Unauth customer model tests"""
+"""organization model tests"""
 
 import os
 import jsonpickle
@@ -12,7 +12,7 @@ os.environ['DATABASE_URL'] = "postgresql:///virque-test"
 from app import app
 db.create_all()
 
-class UnauthCustomerModelTestCase(TestCase):
+class OrganizationModelTestCase(TestCase):
     """does basic model work"""
     def setUp(self):
         """Create test client, add sample data."""
@@ -20,6 +20,8 @@ class UnauthCustomerModelTestCase(TestCase):
         db.create_all()
 
         Unauth_Customer.query.delete()
+        User.query.delete()
+
         test_org = User.signup(
             username = 'test',
             company_name = 'test',
@@ -35,39 +37,56 @@ class UnauthCustomerModelTestCase(TestCase):
             to_be_seated = jsonpickle.encode(LinkedList())
         )
 
-        customer = Unauth_Customer(
-            first_name = 'Ima',
-            last_name = 'Test',
-            email = 'ima@yahoo.com',
-            code = 12345,
-            contact_number = 7898765432,
-            organization_id = f"{User.query.filter_by(username = 'test').first().id}",
-            tag = 'Individual',
-            status = 'In queue'
-        )
-
-        db.session.add(customer)
-
-        db.session.commit()
 
         self.client = app.test_client()
 
     def tearDown(self):
         """Clean up any fouled transaction"""
         db.session.rollback()
-    
-    def test_customer_repr(self):
-        """does repr work"""
 
-        test_customer = Unauth_Customer.query.filter_by(first_name = 'Ima').first()
-
-        expectedRepr = f"<Customer #1: Ima, ima@yahoo.com, 12345, 7898765432, {User.query.filter_by(username = 'test').first().id}, Individual, In queue>"
-        self.assertEqual(repr(test_customer), expectedRepr)
-    
-    def test_customer_model(self):
+    def test_user_model(self):
         """does basic model work"""
-        customer = Unauth_Customer.query.filter_by(username = 'Ima').first()
+        db.session.commit()
+
         test_org = User.query.filter_by(username = 'test').first()
 
-        self.assertEqual(customer.code, 12345)
-        self.assertEqual(customer.organization_id, test_org.id)
+        self.assertEqual(test_org.industry, 'retail')
+        self.assertEqual(test_org.city, 'Edmonton')
+
+    def test_user_create_authenticate(self):
+        """Test if user.create successfully creates a new user and authenticate"""
+        test_org = User.query.filter_by(username = 'test').first()
+
+        self.assertEqual(
+            User.authenticate(
+                username = 'test',
+                password='testpassword'
+             ), test_org)
+        
+        self.assertEqual(
+            User.authenticate(
+                username = 'test2',
+                password='testpassword'
+             ), None)
+
+
+    def test_user_queue(self):
+        """test the linked list in db"""
+
+        test_org = User.query.filter_by(username = 'test').first()
+        queue = jsonpickle.decode(test_org.queue)
+
+        self.assertEqual(queue.length, 0)
+
+
+
+
+
+
+
+
+
+
+
+
+    

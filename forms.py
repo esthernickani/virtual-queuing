@@ -44,10 +44,12 @@ queue_name_choices = [
 
 class OrganizationSignUpForm(FlaskForm):
     """Forms for companies to sign up"""
+    tostyle = HiddenField("Style", validators=[Optional()])
     username = StringField("Username", validators = [DataRequired()])
     company_name = StringField("Company Name", validators = [DataRequired()])
     email = StringField("Contact Email", validators = [DataRequired(), Email()])
     industry = SelectField('Industry', choices = industry_choices)
+    tostyle = HiddenField("Style", validators=[Optional()])
     street_address = StringField('Street Address', validators = [DataRequired()])
     street_address2 = StringField('Street Address line 2')
     city = StringField('city', validators=[DataRequired()])

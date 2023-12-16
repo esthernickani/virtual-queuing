@@ -8,6 +8,11 @@ from time import time
 import jsonpickle
 import os
 import jwt
+from os import environ, path
+from dotenv import load_dotenv
+
+basedir = path.abspath(path.dirname(__file__))
+load_dotenv(path.join(basedir, ".env"))
 
 from datetime import datetime
 
@@ -168,13 +173,14 @@ class User(UserMixin, db.Model):
         """get token to reset"""
         print(os.getenv('SECRET_KEY'))
         return jwt.encode({'reset_password': self.username, 'exp':time() + expires},
-                          key=os.getenv('SECRET_KEY'))
+                          key=environ.get("SECRET_KEY"), algorithm="HS256")
 
     @staticmethod
     def verify_reset_token(token):
         try:
-            username = jwt.decode(token, key=os.getenv('SECRET_KEY'))['reset_password']
+            username = jwt.decode(token, key=environ.get("SECRET_KEY"), algorithm="HS256")['reset_password']
             print(username)
+            pdb.set_trace()
         except Exception as e:
             print(e)
             return
@@ -236,7 +242,7 @@ class Unauth_Customer(db.Model):
     )
 
 def __repr__(self):
-        return f"<User #{self.id}: {self.username}, {self.email}>"
+    return f"<Customer #{self.id}: {self.username}, {self.email}, {self.code}, {self.contact_number}, {self.organization_id}, {self.tag}, {self.status}>"
 
 
 def connect_db(app):

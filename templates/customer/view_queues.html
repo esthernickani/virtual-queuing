@@ -5,9 +5,9 @@
   <body>
     <div class="all-queues">
     <div class="organizations-flex">
+    <input type="text" placeholder="Search.." id="search_queues">
       <div class="organizations">
         {% if organization_card_detail %}
-        <input type="text" placeholder="Search.." class="search_queues">
             {% for organization in organization_card_detail %}
                 <div class="organization_with_queue organization_card">
                     <h3 class="organization-card-title">{{organization['name']}}</h3>

@@ -36,12 +36,12 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['SQLALCHEMY_ECHO'] = True
 app.config['SESSION_TYPE'] = 'filesystem'
 
-app.config['MAIL_PORT'] = 465
+app.config['MAIL_PORT'] = 587
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_USERNAME'] = 'virque@gmail.com'
+app.config['MAIL_USERNAME'] = 'virque45@gmail.com'
 app.config['MAIL_PASSWORD'] = environ.get("PASSWORD")
-
-mail_username = app.config['MAIL_USERNAME']
+app.config['MAIL_USE_SSL'] = False
+app.config['MAIL_USE_TLS'] = True
 
 #create an instance of socket io
 socketio = SocketIO(app)
@@ -52,6 +52,8 @@ if __name__ == '__main__':
     socketio.run(app)
 
 app.app_context().push()
+
+mail = Mail(app)
 
 Session(app)
 
@@ -75,10 +77,10 @@ def send_email(user):
 
     msg = Message()
     msg.subject = "VIRQUE Password Reset"
-    msg.sender = mail_username
+    msg.sender = mail.username
     msg.recipients = [user.email]
     reset_url = url_for('reset_verified', user=user, token=token, _external=True)
-    msg.html = render_template('organization/reset_email.html', reset_url=reset_url)
+    msg.html = render_template('organization/email-template-flask.html', reset_url=reset_url)
 
     mail.send(msg)
 
@@ -108,7 +110,8 @@ def organization_signup():
                 password=form.init_password.data, 
                 to_be_seated = jsonpickle.encode(LinkedList())
             )
-            db.session.commit()
+            if organization: 
+                db.session.commit()
             
         except exc.IntegrityError as e:
             if 'organizations_company_name_key' in str(e):
@@ -119,8 +122,8 @@ def organization_signup():
                 flash("Username already taken", 'error')
             
             return render_template('organization/signup.html', form=form)
-
-        return render_template('organization/login.html', organization = organization)
+        
+        return redirect('organization/login')
     else:
         """show form"""
         return render_template('organization/signup.html', form=form)
@@ -157,9 +160,8 @@ def organization_logout():
     flash("You have been logged out successfully")
     return redirect('/')
 
+
 #ORGANIZATION QUEUE FUNCTIONALITIES
-
-
 @app.route('/organization/queue', methods=['GET', 'POST'])
 @login_required
 def organization_queue():
@@ -319,6 +321,7 @@ def edit_organization_profile():
         organization.postal_code=form.postal_code.data
 
         db.session.commit()
+        flash('Profile successfully edited', 'success')
         return redirect('/organization/profile/overview')
     else:
         return render_template('/organization/profile-edit.html', form=form)
@@ -339,6 +342,22 @@ def forgot_password():
 @app.route('/organization/security/reset-password/<token>', methods = ['GET', 'POST'])
 def reset_verified(token):
     """"""
+
+    if request.method == 'POST':
+        user = User.verify_reset_token(token)
+        print(user)
+        pdb.set_trace()
+        if user:
+            password = request.form.get('password')
+            password_confirm = request.form.get('password_confirm')
+
+            if password != password_confirm:
+                flash('Password do not match', 'error')
+            else:
+                user.set_password(password, commit = True)
+                flash('Password successfully reset', 'success')
+            return redirect('/organization/login')
+        
 
     return render_template("organization/reset-password-new.html")
 
