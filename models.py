@@ -178,7 +178,7 @@ class User(UserMixin, db.Model):
     @staticmethod
     def verify_reset_token(token):
         try:
-            username = jwt.decode(token, key=environ.get("SECRET_KEY"), algorithm="HS256")['reset_password']
+            username = jwt.decode(token, key=environ.get("SECRET_KEY"), algorithms=["HS256"])['reset_password']
             print(username)
             pdb.set_trace()
         except Exception as e:

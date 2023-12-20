@@ -2,11 +2,18 @@
 {% block title %}Customer Queue{% endblock %}
 
 {% block content %}
-<p>Waitlist status</p>
-<img src="" alt="" class="">
-<div class="">
-    <p>Its your turn! See host to check-in</p>
-    <button><a href="/customer/{{customer.code}}/general_waitlist" class="">View Waitlist</a></button>
-    <button><a href="" class="leave_waitlist">Leave Waitlist</a></button>
+<div class="waitlist-body">
+    <div class="waitlist-card">
+        <p>Waitlist status</p>
+        <img src="/static/images/green-traffic-light.jpg" alt="" class="green-traffic-light">
+        <div class="">
+            <p>{{customer.tag}} for {{name}} <span class="customer_code">{{customer.code}}</span></p>
+            <p>Its your turn! See host to check-in</p>
+            <div class="check-in-btns">
+                <button><a href="/customer/{{customer.code}}/general_waitlist" class="">View Waitlist</a></button>
+                <button><a href="/customer/{{customer.code}}/leave_waitlist" class="leave_waitlist">Leave Waitlist</a></button>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

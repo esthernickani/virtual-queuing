@@ -55,14 +55,13 @@ def get_wait_time(wait_time):
 def get_current_wait_time(wait_time):
     """break waittime into dict to be accessible and get the time they would be attended to approximately"""
     wait_time_param = jsonpickle.decode(wait_time)
-    now = datetime.now()
+    now = datetime.now().replace(second=0, microsecond=0)
     current_time = now.strftime("%H:%M")
     min_wait_time = timedelta(minutes = wait_time_param['min'])
     max_wait_time = timedelta(minutes = wait_time_param['max'])
 
     new_time_min = now + min_wait_time
     new_time_max = now + max_wait_time
-
     return (new_time_min, new_time_max)
 
 def get_position(queue, customer_code):

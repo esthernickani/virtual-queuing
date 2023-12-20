@@ -18,12 +18,14 @@ def get_distance_traveltime(travel_mode, customer_org_coords):
     url = f"https://api.mapbox.com/directions/v5/mapbox/{mode}/{customer_long},{customer_lat};{organization_long},{organization_lat}?geometries=geojson&access_token={mapbox_api_secret_key}"
 
     response = requests.get(url)
+    print(response)
     data = response.json()
+    print(data)
     
     distance = (data["routes"][0]["distance"])/1000
     duration = (data["routes"][0]["duration"])/60
     return (f"{round(distance, 1)} km", f"{round(duration)} mins")
-    pdb.set_trace()
+
     
 
 def send_join_queue_message(organization, customer_code, customer_number):

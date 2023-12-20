@@ -62,11 +62,14 @@ document.addEventListener("DOMContentLoaded", (e) => {
         const timeSpan = document.querySelector('.time')
 
         e.preventDefault()
-        console.log(e)
 
         travel_mode = document.querySelector('input[name="travel-mode"]:checked').value;
-        console.log(e.target.classList)
-        
+          //hide form to get mode of travel
+        modeOfTravelForm.classList.add("hidden")
+        modeOfTravelForm.classList.remove("add_flex")
+        body.classList.remove('opacity')
+        waitlistCard.classList.remove('opacity')
+
         async function successCallback(position) {
             console.log(position.coords.latitude)
 
@@ -76,24 +79,27 @@ document.addEventListener("DOMContentLoaded", (e) => {
                 'travel_mode': travel_mode
             }
 
-            
+            console.log(dataToSend)
+            try {
+                const response = await axios.post(`/customer/${customerCode.textContent}/directions`, dataToSend)
+                const distanceAndTime = await response.data
 
-            const response = await axios.get(`/customer/${customerCode.textContent}/directions`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(dataToSend)
-            })
-            
-            const distanceAndTime = await response.json()
+                console.log(distanceAndTime)
+                
+                getTravelTimeCard.classList.add('hidden')
+                travelTimeResponse.classList.remove('hidden')
+                travelTimeResponse.classList.add('add_flex')
+                
+
+
+                distanceSpan.textContent = distanceAndTime.distance;
+                timeSpan.textContent = distanceAndTime.time
+                
+            } catch(e) {
+                console.log(e)
+            }
            
-            getTravelTimeCard.classList.add('hidden')
-            travelTimeResponse.classList.remove('hidden')
-            travelTimeResponse.classList.add('add_flex')
-
-            distanceSpan.textContent = distanceAndTime.distance;
-            timeSpan.textContent = distanceAndTime.time
+            
 
 
         }
@@ -110,8 +116,15 @@ document.addEventListener("DOMContentLoaded", (e) => {
     }
 
     function showModeOfTravelRequest(e) {
+        /*add overlay to body element and show mode of travel form*/
+        const body = document.querySelector('body')
+        const waitlistCard = document.querySelector('.waitlist-card')
+
         e.preventDefault(e);
         modeOfTravelForm.classList.remove("hidden")
+        modeOfTravelForm.classList.add('add_flex')
+        body.classList.add('opacity')
+        waitlistCard.classList.add('opacity')
     }
 
     function showLeaveWaitlistNotif(e) {

@@ -2,14 +2,16 @@
 {% block title %} VIRQUE {% endblock %}
 
 {% block content %}
-    <h2>Queue wait time edit</h2>
-    <p>Please enter an approximate wait-time range in minutes below:</p>
-    <form action="/organization/profile/queue_preferences/edit" method ="POST">
-        <label for="low-range">Current wait time is between</label>
-        <input type="number" name="low-range" id="low-range" required>
-        <label for="high-range">and</label>
-        <input type="number" name="high-range" id="high-range" required>
-        <input type="submit" value="Save changes">
-    </form>
-    <button><a href="" class="">Cancel</a></button>
+    <div class="side-main-content wait-time-edit" id="edit-form-content">
+        <h2>Queue wait time edit</h2>
+        <p>Please enter an approximate wait-time range in minutes below:</p>
+        <form action="/organization/profile/queue_preferences/edit" method ="POST">
+            <label for="low-range">Current wait time is between</label>
+            <input type="number" name="low-range" id="low-range" required>
+            <label for="high-range">and</label>
+            <input type="number" name="high-range" id="high-range" required>
+            <input type="submit" value="Save changes" id="save-changes-edit-password-email" class="save-edit-wait-time">
+        </form>
+        <button class="cancel-edit-btn"><a href="" class="">Cancel</a></button>
+    </div>
 {% endblock %}

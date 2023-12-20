@@ -552,14 +552,16 @@ def check_customer_code():
 @app.route('/customer/<int:customer_code>/waitlist')
 def show_customer_on_queue(customer_code):
     customer = Unauth_Customer.query.filter_by(code = customer_code).first()
-    if customer:
+    if customer.status == 'In Queue':
         organization = User.query.filter_by(id = customer.organization_id).first()
         #get position of customer in queue 
         customer_position_in_queue = get_position_ordinal(organization, customer_code)
         #get wait time
         service_time_min, service_time_max = get_current_wait_time(organization.queue_wait_time)
-        
+        print(customer)
         return render_template('customer/in_queue.html', customer = customer, service_time_min = service_time_min, service_time_max = service_time_max, position = customer_position_in_queue, organization = organization)
+    elif customer.status == "to be seated":
+        return render_template('customer/check_in.html', customer=customer)
     else:
         flash("Invalid code or You are currently not in any queues")
         return redirect('/')
@@ -583,8 +585,6 @@ def handle_directions(customer_code):
 
     print (jsonify(distance_time))
     return jsonify(distance_time)
-        
-
 
 @app.route('/customer/<int:customer_code>/general_waitlist', methods = ['GET', 'POST'])
 def view_general_waitlist(customer_code):
@@ -601,9 +601,8 @@ def view_general_waitlist(customer_code):
 @app.route('/customer/<int:customer_code>/leave_waitlist', methods = ['GET', 'POST'])
 def leave_waitlist(customer_code):
     """function for customer to leave waitlist"""
-    
-    try:
-        current_customer = Unauth_Customer.query.filter_by(code = customer_code).first()
+    current_customer = Unauth_Customer.query.filter_by(code = customer_code).first()
+    if current_customer.status == 'In Queue':
         organization = User.query.filter_by(id = current_customer.organization_id).first()
         #get queue and remove indivdual from queue
         queue = jsonpickle.decode(organization.queue)
@@ -615,11 +614,10 @@ def leave_waitlist(customer_code):
         Unauth_Customer.query.filter_by(code = customer_code).delete()
         #commit changes
         db.session.commit()
-
+    elif current_customer.status == "to be seated":
+        
         flash("You have been successfully removed from the queue")
         return redirect('/')
-    except Exception as error:
-        print(error)
         flash('Request could not be completed at this time, please try again or contact support', 'error')
         return redirect('/')
 
@@ -641,7 +639,6 @@ def show_current_queues():
         print(error)
         flash('Request could not be completed, please try again or contact support', 'error')
         return redirect('/')
-
 
 @app.route('/customer/join_queue', methods = ['GET', 'POST'])
 def show_join_queue():
