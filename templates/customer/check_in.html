@@ -11,7 +11,13 @@
             <p>Its your turn! See host to check-in</p>
             <div class="check-in-btns">
                 <button><a href="/customer/{{customer.code}}/general_waitlist" class="">View Waitlist</a></button>
-                <button><a href="/customer/{{customer.code}}/leave_waitlist" class="leave_waitlist">Leave Waitlist</a></button>
+                <button><a href="" class="leave_waitlist">Leave Waitlist</a></button>
+            </div>
+            <div class="notification confirm_leave hidden">
+                <p>By clicking "confirm," you will forfeit your position in the queue.</p>
+                <button><a href="/customer/{{customer.code}}/leave_waitlist">Confirm</a> </button>
+                <button class="close-in-queue">Cancel</button>
+            </div>
             </div>
         </div>
     </div>

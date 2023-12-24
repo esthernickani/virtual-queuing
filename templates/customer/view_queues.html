@@ -3,9 +3,9 @@
 
 {% block content %}
   <body>
+    <input type="text" placeholder="Search.." id="search_queues">
     <div class="all-queues">
     <div class="organizations-flex">
-    <input type="text" placeholder="Search.." id="search_queues">
       <div class="organizations">
         {% if organization_card_detail %}
             {% for organization in organization_card_detail %}

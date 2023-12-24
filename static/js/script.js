@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded", (e) => {
     const submitJoinQueueForm = document.querySelector('#submit_join_queue_form');
     const organization = document.querySelector('.organizations');
     const getTravelTime = document.querySelector('.agree_btn');
+    const reloadTravelTime = document.querySelector('.reload')
     const customerCode = document.querySelector('.customer_code');
     const leaveWaitlistBtn = document.querySelector('.leave_waitlist');
     const confirmLeaveNotif = document.querySelector('.confirm_leave');
@@ -60,15 +61,18 @@ document.addEventListener("DOMContentLoaded", (e) => {
         const travelTimeResponse = document.querySelector('.travel-time-response')
         const distanceSpan = document.querySelector('.distance')
         const timeSpan = document.querySelector('.time')
+        const body = document.querySelector('body')
+        const waitlistCard = document.querySelector('.waitlist-card')
 
         e.preventDefault()
 
-        travel_mode = document.querySelector('input[name="travel-mode"]:checked').value;
+        let travel_mode = document.querySelector('input[name="travel-mode"]:checked').value;
           //hide form to get mode of travel
         modeOfTravelForm.classList.add("hidden")
         modeOfTravelForm.classList.remove("add_flex")
         body.classList.remove('opacity')
         waitlistCard.classList.remove('opacity')
+
 
         async function successCallback(position) {
             console.log(position.coords.latitude)
@@ -86,21 +90,18 @@ document.addEventListener("DOMContentLoaded", (e) => {
 
                 console.log(distanceAndTime)
                 
-                getTravelTimeCard.classList.add('hidden')
+                getTravelTimeCard.style.display = 'none'
                 travelTimeResponse.classList.remove('hidden')
                 travelTimeResponse.classList.add('add_flex')
-                
-
 
                 distanceSpan.textContent = distanceAndTime.distance;
                 timeSpan.textContent = distanceAndTime.time
+
+
                 
             } catch(e) {
                 console.log(e)
             }
-           
-            
-
 
         }
 
@@ -154,6 +155,10 @@ document.addEventListener("DOMContentLoaded", (e) => {
         getTravelTime.addEventListener('click', showModeOfTravelRequest)
     }
 
+    if (reloadTravelTime) {
+        reloadTravelTime.addEventListener('click', showModeOfTravelRequest)
+    }
+
     if (submitModeOfTravelForm) {
         submitModeOfTravelForm.addEventListener('click', getCustomerLocation)}
     
@@ -161,6 +166,14 @@ document.addEventListener("DOMContentLoaded", (e) => {
         leaveWaitlistBtn.addEventListener('click', showLeaveWaitlistNotif)
     }
 
+    const closeInQueue = document.querySelectorAll('.close-in-queue')
+
+    const closeDiv = e => {
+        e.preventDefault()
+        e.target.parentElement.style.display = 'none'
+    }
+
+    closeInQueue.forEach(closeInQueueBtn => closeInQueueBtn.addEventListener('click', closeDiv))
 
 
 
@@ -207,6 +220,7 @@ document.addEventListener("DOMContentLoaded", (e) => {
     const groupSize = document.querySelector(".group-size")
     const individualOrGroupForm = document.querySelector(".individual_or_group")
     const allQueues = document.querySelector(".all-queues")
+    const searchQueues = document.querySelector('#search_queues')
 
     const showCustomerInfoForm = e => {
         console.log(e)
@@ -238,6 +252,7 @@ document.addEventListener("DOMContentLoaded", (e) => {
     if (organization) {
         organization.addEventListener('click', function(e) {
             organizationName = e.target.parentElement.children[0].innerText
+            searchQueues.classList.add('hidden')
             allQueues.classList.add('hidden')
             individualOrGroupForm.classList.remove('hidden')
             e.preventDefault()
@@ -265,6 +280,7 @@ document.addEventListener("DOMContentLoaded", (e) => {
         console.log(contactNumber)
 
         socket.connect()
+        console.log(socket.connected)
         
         socket.emit('join_queue', {
             firstName:firstName,

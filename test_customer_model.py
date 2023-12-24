@@ -10,7 +10,6 @@ from models import Unauth_Customer, User, db
 os.environ['DATABASE_URL'] = "postgresql:///virque-test"
 
 from app import app
-db.create_all()
 
 class UnauthCustomerModelTestCase(TestCase):
     """does basic model work"""

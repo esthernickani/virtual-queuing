@@ -11,12 +11,12 @@
                 <p>You're on the waitlist</p>
                 <p>{{customer.tag}} for {{name}} <span class="customer_code">{{customer.code}}</span></p>
             </div>
-            <span class="close">x</span>
+            <span class="close-in-queue">x</span>
         </div>
         <div class="get_travel_time_card waitlist-span">
             <p class="travel-time" >Would you like to get the travel time from your current location to {{organization.username}}?</p>
             <button class="agree_btn"><a href="">Yes</a></button>
-            <span class="close">x</button>
+            <span class="close-in-queue">x</button>
         </div>
         <div class="travel-time-response hidden">
             <p>{{organization.username}} is <b><span class="distance"></span></b> away and would take <b><span class="time"></span></b> to get there from your current location</p>
@@ -36,9 +36,10 @@
         <div class="notification confirm_leave hidden">
             <p>By clicking "confirm," you will forfeit your position in the queue.</p>
             <button><a href="/customer/{{customer.code}}/leave_waitlist">Confirm</a> </button>
+            <button class="close-in-queue">Cancel</button>
         </div>
         <div class="notification mode-of-travel-form hidden">
-            <span>x</span>
+            <span class="close-in-queue">x</span>
             <h4>Choose your mode of travel</h4>
             <span class="driving">
                 <input type="radio" name="travel-mode" value="driving" id="driving">

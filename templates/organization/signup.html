@@ -10,12 +10,14 @@
         {% for error in field.errors %}
             <span class="text-danger">{{ error }}</span>
         {% endfor %}
-        {{ field.label.text }}
-        {{ field(placeholder=field.label.text, class="form-control") }}
+        <span class="label-input-signup">
+            {{ field.label.text }}
+            {{ field(placeholder=field.label.text, class="form-control") }}
+        </span>
         {% endfor %}
 
-        <button class="btn btn-primary btn-lg btn-block">Sign up!</button>
+        <button class="btn-signup">Sign up!</button>
     </form>
-    <p>Already have an account? <a href="/organization/login" class="">Login</a></p>
+    <p class="already-login">Already have an account? <a href="/organization/login" class="">Login</a></p>
 </div>
 {% endblock %}

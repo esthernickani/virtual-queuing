@@ -23,8 +23,6 @@ from linkedlist import LinkedList, Node
 
 app = Flask(__name__, template_folder = "templates")
 
-
-
 mail = Mail(app)
 
 basedir = path.abspath(path.dirname(__file__))
@@ -335,8 +333,11 @@ def forgot_password():
     if request.method == 'POST':
         email = request.form['email']
         user = User.verify_email(email)
-        print(user)
-        send_email(user)
+        if user:
+            send_email(user)
+            flash('Check your email for further instructions', 'success')
+        else:
+            flash('Invalid email', 'error')
         return redirect('/organization/login')
     
 @app.route('/organization/security/reset-password/<token>', methods = ['GET', 'POST'])
@@ -346,7 +347,6 @@ def reset_verified(token):
     if request.method == 'POST':
         user = User.verify_reset_token(token)
         print(user)
-        pdb.set_trace()
         if user:
             password = request.form.get('password')
             password_confirm = request.form.get('password_confirm')
@@ -472,67 +472,62 @@ def deactivate_queue():
 def join_queue(data):
     """join queue"""
     #get room from data sent from script.js-client side
-    try:
-        room = data['organizationName']
-        join_room(room)
+    room = data['organizationName']
+    join_room(room)
 
-        #get tag to best describe customer or group of customers
-        tag = get_tag(data['groupSize'])
-        time_joined = get_current_time()
+    #get tag to best describe customer or group of customers
+    tag = get_tag(data['groupSize'])
+    time_joined = get_current_time()
 
-        #get organization and current queue and users position in queue
-        organization = User.query.filter_by(username = data['organizationName']).first()
-        queue = jsonpickle.decode(organization.queue)
+    #get organization and current queue and users position in queue
+    organization = User.query.filter_by(username = data['organizationName']).first()
+    queue = jsonpickle.decode(organization.queue)
 
-        #create customer dict and make it a node to add to list from database
-        new_customer_code = generate_code()
-        customer = create_unauth_customer_dict(data['firstName'], data['lastName'], int(data['contactNumber']), data['email'], tag, time_joined, new_customer_code)
-        customer_node = Node(customer)
+    #create customer dict and make it a node to add to list from database
+    new_customer_code = generate_code()
+    customer = create_unauth_customer_dict(data['firstName'], data['lastName'], int(data['contactNumber']), data['email'], tag, time_joined, new_customer_code)
+    customer_node = Node(customer)
 
-        customer_number = int(data['contactNumber'])
+    customer_number = int(data['contactNumber'])
 
-        queue.insert_at_end(customer_node)
-        updated_queue = jsonpickle.encode(queue)
-        organization.queue = updated_queue
-        db.session.commit()
+    queue.insert_at_end(customer_node)
+    updated_queue = jsonpickle.encode(queue)
+    organization.queue = updated_queue
+    db.session.commit()
 
-        #get all unique codes to make sure unique code is not repeated
+    #get all unique codes to make sure unique code is not repeated
 
-        first_name = data['firstName'],
+    first_name = data['firstName'],
 
-        new_customer = Unauth_Customer(
-            first_name = first_name,
-            last_name = data['lastName'],
-            email = data['email'],
-            code = new_customer_code,
-            contact_number =  int(data['contactNumber']),
-            organization_id = organization.id, 
-            tag = tag, 
-            status = 'In Queue'
-        )
+    new_customer = Unauth_Customer(
+        first_name = first_name,
+        last_name = data['lastName'],
+        email = data['email'],
+        code = new_customer_code,
+        contact_number =  int(data['contactNumber']),
+        organization_id = organization.id, 
+        tag = tag, 
+        status = 'In Queue'
+    )
 
-        db.session.add(new_customer)
-        db.session.commit()
+    db.session.add(new_customer)
+    db.session.commit()
 
-        #send_join_queue_message(organization.username, new_customer_code, customer_number)
+    #send_join_queue_message(organization.username, new_customer_code, customer_number)
 
-        #send message to customer that they have joined queue
-        #send_join_queue_message(organization.username, new_customer_code, customer_number)
+    #send message to customer that they have joined queue
+    #send_join_queue_message(organization.username, new_customer_code, customer_number)
 
-        """socket redirect customer to the page that shows queue"""
-        emit('redirect_customer', {'url': f"/customer/{new_customer_code}/waitlist"})
+    """socket redirect customer to the page that shows queue"""
+    emit('redirect_customer', {'url': f"/customer/{new_customer_code}/waitlist"})
 
-        # Check if an organization is active and inform them someone joined
-        
-        organization = User.query.get_or_404(current_user.get_id())
-        if organization and organization.queue_is_active:
-            room = organization.username
-            join_room()
-            emit('notify organization', {'first_name': first_name}, room=room)
-    except Exception as error:
-        print(error)
-        flash('Request could not be completed, please try again or contact support', 'error')
-        return redirect('/')
+    # Check if an organization is active and inform them someone joined
+    
+    organization = User.query.get_or_404(current_user.get_id())
+    if organization and organization.queue_is_active:
+        room = organization.username
+        join_room()
+        emit('notify organization', {'first_name': first_name}, room=room)
 
 
 
@@ -602,25 +597,47 @@ def view_general_waitlist(customer_code):
 def leave_waitlist(customer_code):
     """function for customer to leave waitlist"""
     current_customer = Unauth_Customer.query.filter_by(code = customer_code).first()
-    if current_customer.status == 'In Queue':
-        organization = User.query.filter_by(id = current_customer.organization_id).first()
-        #get queue and remove indivdual from queue
-        queue = jsonpickle.decode(organization.queue)
-        queue.removeAtSpecificIdx(current_customer.position_in_queue - 1)
-        updated_queue = jsonpickle.encode(queue)
-        organization.queue = updated_queue
-        db.session.commit()
-        #delete from customer db
-        Unauth_Customer.query.filter_by(code = customer_code).delete()
-        #commit changes
-        db.session.commit()
-    elif current_customer.status == "to be seated":
-        
-        flash("You have been successfully removed from the queue")
-        return redirect('/')
-        flash('Request could not be completed at this time, please try again or contact support', 'error')
-        return redirect('/')
+    organization = User.query.filter_by(id = current_customer.organization_id).first()
 
+    if current_customer.status == 'In Queue':
+        try:
+            #get queue and remove indivdual from queue
+            queue = jsonpickle.decode(organization.queue)
+            customer_position_in_queue = get_position(queue, customer_code)
+            queue.removeAtSpecificIdx(customer_position_in_queue - 1)
+            updated_queue = jsonpickle.encode(queue)
+            organization.queue = updated_queue
+            db.session.commit()
+            #delete from customer db
+            Unauth_Customer.query.filter_by(code = customer_code).delete()
+            #commit changes
+            db.session.commit()
+        except Exception as e:
+            print(e)
+            pdb.set_trace()
+            flash('Request could not be completed, please try again or contact support', 'error')
+        return redirect('/')
+    elif current_customer.status == "to be seated":
+        try:
+            be_seated_list = jsonpickle.decode(organization.to_be_seated)
+            #get position of customer in beseatedlist 
+            customer_position_in_queue = get_position(be_seated_list, customer_code)
+            #remove customer from queue
+            remove_customer(customer_position_in_queue, be_seated_list)
+            updated_be_seated_list = jsonpickle.encode(be_seated_list)
+            organization.to_be_seated = updated_be_seated_list
+            db.session.commit()
+            #remove customer from unauth customer db
+            Unauth_Customer.query.filter_by(code = customer_code).delete()
+            db.session.commit()
+
+            flash(f"You have successfully left the queue", 'success')
+        except Exception as e:
+            print(e)
+            pdb.set_trace()
+            flash('Request could not be completed, please try again or contact support', 'error')
+        return redirect('/')
+        
 
 @app.route('/customer/view_queues', methods = ['GET', 'POST'])
 def show_current_queues():

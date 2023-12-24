@@ -180,7 +180,6 @@ class User(UserMixin, db.Model):
         try:
             username = jwt.decode(token, key=environ.get("SECRET_KEY"), algorithms=["HS256"])['reset_password']
             print(username)
-            pdb.set_trace()
         except Exception as e:
             print(e)
             return

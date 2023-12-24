@@ -2,14 +2,19 @@
 {% block title %}{% endblock %}
 
 {% block content %}
-    {% for customer in queue %}
-    <div class="customer_card">
-        {% if customer.data['code'] == current_customer.code %}
-            <p><b>{{current_customer.first_name}} {{current_customer.last_name[0]}}., {{customer.data['tag']}}</b></p>
-            <p><small>Joined at {{customer.data['time_joined']}}</small></p>
-        {% else %}
-            <p>An {{customer.data['tag']}}</p>
-        {% endif %}
+    <div class="waitlist-body">
+        <div class="all_customers waitlist-card">
+            {% for customer in queue %}
+            <div class="customer">
+                {% if customer.data['code'] == current_customer.code %}
+                    <p><b>{{current_customer.first_name}} {{current_customer.last_name[0]}}., {{customer.data['tag']}}</b></p>
+                    <p><small>Joined at {{customer.data['time_joined']}}</small></p>
+                {% else %}
+                    <p>An {{customer.data['tag']}}</p>
+                {% endif %}
+            </div>
+            <hr>
+        {% endfor %}
+        </div>
     </div>
-    {% endfor %}
 {% endblock %}

@@ -1,13 +1,15 @@
 """Organization View tests."""
 import os
+import pdb
 import jsonpickle
 from unittest import TestCase
 from linkedlist import LinkedList
 from models import Unauth_Customer, User, db
+from flask_socketio import SocketIOTestClient
 
 os.environ['DATABASE_URL'] = "postgresql:///virque-test"
 
-from app import app
+from app import app, socketio
 
 db.create_all()
 
@@ -52,3 +54,16 @@ class QueueTestCase(TestCase):
 
     def test_join_queue(self):
         """test a client joining queue"""
+        data = {'firstName': 'testfirstname', 
+                'lastName': 'testlastname',
+                'email': 'testcustomer@yahoo.com', 
+                'contactNumber': '+1111111111', 
+                'organizationName': 'test', 
+                'groupSize': None}
+        
+        with self.socketio_client:
+            self.socketio_client.emit('join_queue', data)
+            response = self.socketio_client.get_received()
+            
+            print(response)
+            pdb.set_trace()
