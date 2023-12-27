@@ -54,11 +54,11 @@ Kidon = User.signup(
 )
 
 Winners = User.signup(
-    username = 'winners',
-    company_name = 'Winners',
-    email = 'winners@yahoo.com',
+    username = 'winnerscrew',
+    company_name = 'Winners Crew',
+    email = 'winnerscrew@yahoo.com',
     industry = 'retail',
-    street_address= '12060 104 Ave NW', 
+    street_address= '8973 100 Ave NW', 
     street_address2= None,
     city = 'Edmonton',
     province_or_state='Alberta',

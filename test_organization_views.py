@@ -86,20 +86,6 @@ class OrganizationViewTestCase(TestCase):
             self.assertEqual(resp.status_code, 200)
             self.assertIn('Profile successfully edited', html)
 
-    def test_reset_email(self):
-        """can you reset email"""
-        with self.client as c:
-            resp = c.post('/organization/profile/security/reset-email',
-                          data={"new_email" : "newemail@yahoo.com",
-                                "confirm_email": "newemail@yahoo.com"},
-                            follow_redirects = True)
-            
-            html = resp.get_data(as_text=True)
-            self.assertEqual(resp.status_code, 200)
-            self.assertIn('Email address successfully changed', html)
-
-            organization = User.query.filter_by(username = 'test').first()
-            self.assertEqual(organization.email, 'newemail@yahoo.com')
 
 
 

@@ -389,7 +389,6 @@ svg {
 
 .queue h2 {
     font-size: 3rem;
-    margin: 9rem 17rem;
     font-weight: 700;
     color: #242941;
 }
@@ -402,6 +401,8 @@ svg {
     margin: 9rem 17rem;
     font-weight: 700;
     color: #242941;
+    flex-direction: column;
+    gap: 1rem;
 }
 
 .activate_queue input[type=radio] {
@@ -409,6 +410,39 @@ svg {
     width: 100%;
     height: 2rem;
 }
+
+#activate_queue {
+    width: 12rem;
+    height: 3.5rem;
+}
+
+.activate_queue input[type=radio]:hover {
+    cursor: pointer;
+}
+
+#activate_queue:hover {
+    cursor: pointer;
+    border: 1px solid #BC4747;
+
+}
+
+.deactivate_queue {
+    color: #FAFAFA;
+    background: #242940;
+    width: fit-content;
+    padding: 2rem;
+}
+
+.deactivate_queue button {
+    width: 6rem;
+    height: 1.5rem;
+}
+
+.deactivate_queue button:hover,
+.deactivate_queue #deactivate:hover {
+    cursor: pointer;
+}
+
 
 /*view_queues*/
 .organizations {
@@ -422,7 +456,7 @@ svg {
     background-color: #242942;
     color: #FAFAFA;
     padding: 1rem 1.5rem;
-    border-radius: 1rem;
+    border-radius: 1rem; 
 }
 
 .organization_card:hover {

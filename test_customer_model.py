@@ -60,12 +60,12 @@ class UnauthCustomerModelTestCase(TestCase):
 
         test_customer = Unauth_Customer.query.filter_by(first_name = 'Ima').first()
 
-        expectedRepr = f"<Customer #1: Ima, ima@yahoo.com, 12345, 7898765432, {User.query.filter_by(username = 'test').first().id}, Individual, In queue>"
+        expectedRepr = f"<Unauth_Customer #1: Ima, Test, ima@yahoo.com, 12345, 7898765432, {User.query.filter_by(username = 'test').first().id}, Individual, In queue>"
         self.assertEqual(repr(test_customer), expectedRepr)
     
     def test_customer_model(self):
         """does basic model work"""
-        customer = Unauth_Customer.query.filter_by(username = 'Ima').first()
+        customer = Unauth_Customer.query.filter_by(first_name = 'Ima').first()
         test_org = User.query.filter_by(username = 'test').first()
 
         self.assertEqual(customer.code, 12345)

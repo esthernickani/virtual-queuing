@@ -240,8 +240,9 @@ class Unauth_Customer(db.Model):
         nullable = False
     )
 
-def __repr__(self):
-    return f"<Customer #{self.id}: {self.username}, {self.email}, {self.code}, {self.contact_number}, {self.organization_id}, {self.tag}, {self.status}>"
+
+    def __repr__(self):
+        return f"<Unauth_Customer #{self.id}: {self.first_name}, {self.last_name}, {self.email}, {self.code}, {self.contact_number}, {self.organization_id}, {self.tag}, {self.status}>"
 
 
 def connect_db(app):

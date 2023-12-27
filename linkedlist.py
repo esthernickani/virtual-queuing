@@ -72,7 +72,7 @@ class LinkedList:
             current_position += 1
 
         if current_node != None:
-            removed_item = current_node
+            removed_item = current_node.data
             previous_node.next = current_node.next
             self.length -= 1
         else:
@@ -123,18 +123,18 @@ class LinkedList:
                 
 
     
-    """def __repr__(self):
-        return a human readable version of linked list"""
-        #linked_list_list = []
-        #if self.head == None and self.tail == None:
-         #   return str(linked_list_list)
-        #else:
-        #    current_node = self.head
-         ##   while current_node:
-           #     linked_list_list.append(current_node.data)
-          #      current_node = current_node.next
-        #return f"{linked_list_list}"
-""""""
+    def __repr__(self):
+        #return a human readable version of linked list
+        linked_list_list = []
+        if self.head == None and self.tail == None:
+            return str(linked_list_list)
+        else:
+            current_node = self.head
+            while current_node:
+                linked_list_list.append(current_node.data)
+                current_node = current_node.next
+        return f"{linked_list_list}"
+    
 class LinkedListIterator:
     def __init__(self, head):
         self.current = head

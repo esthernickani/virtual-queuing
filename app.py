@@ -220,7 +220,7 @@ def dequeue_customer(organization_id, customer_code):
             organization.to_be_seated = updated_be_seated_list
             db.session.commit()
             #send SMS to customer that they are ready to be checked in
-            #send_dequeue_message(customer_in_db.contact_number)
+            send_dequeue_message(customer_in_db.contact_number)
             
         return redirect('/organization/queue')
     except:
@@ -269,7 +269,7 @@ def delete_customer(organization_id, customer_code):
         organization.queue = updated_queue
         db.session.commit()
         #send SMS to customer that they have been removed from the queue
-        #send_delete_message(customer_in_db.contact_number)
+        send_delete_message(customer_in_db.contact_number)
         #delete them from db
         flash(f"Customer {customer_code} has been successfully removed from the queue")
         Unauth_Customer.query.filter_by(code = customer_code).delete()
@@ -513,10 +513,8 @@ def join_queue(data):
     db.session.add(new_customer)
     db.session.commit()
 
-    #send_join_queue_message(organization.username, new_customer_code, customer_number)
-
     #send message to customer that they have joined queue
-    #send_join_queue_message(organization.username, new_customer_code, customer_number)
+    send_join_queue_message(organization.username, new_customer_code, customer_number)
 
     """socket redirect customer to the page that shows queue"""
     emit('redirect_customer', {'url': f"/customer/{new_customer_code}/waitlist"})
