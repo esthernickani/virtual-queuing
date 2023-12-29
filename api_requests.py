@@ -1,4 +1,3 @@
-from api_secrets import mapbox_api_secret_key, twilio_auth_token, twilio_account_sid
 import requests
 from twilio.rest import Client
 from os import environ, path
