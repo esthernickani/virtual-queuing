@@ -1,9 +1,15 @@
 from api_secrets import mapbox_api_secret_key, twilio_auth_token, twilio_account_sid
-import os
-import twilio
-import pdb
 import requests
 from twilio.rest import Client
+from os import environ, path
+from dotenv import load_dotenv
+
+basedir = path.abspath(path.dirname(__file__))
+load_dotenv(path.join(basedir, ".env"))
+
+mapbox_api_secret_key = environ.get("mapbox_api_secret_key")
+twilio_auth_token = environ.get("twilio_auth_token")
+twilio_account_sid = environ.get("twilio_account_sid")
 
 def get_distance_traveltime(travel_mode, customer_org_coords):
     """get directions from mapbox api"""
