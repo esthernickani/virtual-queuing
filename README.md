@@ -1,6 +1,6 @@
 # VIR-QUE
 
-This is a virtual queueing system created using linked lists to manage the queues.
+This is a virtual queueing system created using linked lists to manage the queues. Homepage design influenced by Frontend Mentor.
 
 ## Table of contents
 
