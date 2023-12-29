@@ -16,7 +16,6 @@ from flask_mail import Mail, Message
 from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identity
 from os import environ, path
 from dotenv import load_dotenv
-from config import Configuration
 
 
 from linkedlist import LinkedList, Node
