@@ -2,6 +2,7 @@ import requests
 from twilio.rest import Client
 from os import environ, path
 from dotenv import load_dotenv
+import pdb
 
 basedir = path.abspath(path.dirname(__file__))
 load_dotenv(path.join(basedir, ".env"))
@@ -24,8 +25,10 @@ def get_distance_traveltime(travel_mode, customer_org_coords):
 
     response = requests.get(url)
     print(response)
+    pdb.set_trace()
     data = response.json()
     print(data)
+
     
     distance = (data["routes"][0]["distance"])/1000
     duration = (data["routes"][0]["duration"])/60

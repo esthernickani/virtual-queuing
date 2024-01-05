@@ -365,6 +365,24 @@ document.addEventListener("DOMContentLoaded", (e) => {
     profileLink ? profileLink.addEventListener('click', toggleUnderline) : null
     securityLink ? securityLink.addEventListener('click', toggleUnderline) : null
     
+    const flashMessage = document.querySelector('.flash_message')
+
+    const updateFlashMessage = error => {
+        flashMessage.innerHTML = `<div class="alert-message-error">
+                                        <ul>
+                                            <li class="error-li">${error}</li>
+                                        </ul>
+                                    </div>`
+    }
+
+    socket.on('redirect_customer_error_email', function(data) {
+        updateFlashMessage(data.error_message)
+           
+    })
+
+    socket.on('redirect_customer_error_phone', function(data) {
+        updateFlashMessage(data.error_message)
+    })
 
 })
 

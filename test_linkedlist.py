@@ -41,10 +41,8 @@ class LinkedListTestCase(TestCase):
         node_three = Node(3)
         node_four = Node(4)
 
-        new_list.insert_at_end(node_one)
-        new_list.insert_at_end(node_two)
-        new_list.insert_at_end(node_three)
-        new_list.insert_at_end(node_four)
+        for node in [node_one, node_two, node_three, node_four]:
+            new_list.insert_at_end(node)
 
         removed_item = new_list.removeAtSpecificIdx(2)
 
@@ -57,11 +55,9 @@ class LinkedListTestCase(TestCase):
         node_two = Node(2)
         node_three = Node(3)
         node_four = Node(4)
-        
-        new_list.insert_at_end(node_one)
-        new_list.insert_at_end(node_two)
-        new_list.insert_at_end(node_three)
-        new_list.insert_at_end(node_four)
+
+        for node in [node_one, node_two, node_three, node_four]:
+            new_list.insert_at_end(node)
 
         new_list.remove_first_node()
 

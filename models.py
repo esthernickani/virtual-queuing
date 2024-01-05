@@ -223,6 +223,7 @@ class Unauth_Customer(db.Model):
     contact_number = db.Column(
         db.BIGINT(), 
         nullable = False,
+        unique = True
     )
 
     organization_id = db.Column(
