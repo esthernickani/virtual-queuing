@@ -28,7 +28,6 @@ basedir = path.abspath(path.dirname(__file__))
 load_dotenv(path.join(basedir, ".env"))
 
 app.config['SECRET_KEY'] = environ.get("SECRET_KEY")
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get("SQLALCHEMY_DATABASE_URI")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = environ.get("SQLALCHEMY_TRACK_MODIFICATIONS")
 app.config['SQLALCHEMY_ECHO'] = environ.get("SQLALCHEMY_ECHO")
 app.config['SESSION_TYPE'] = environ.get("SESSION_TYPE")
@@ -40,6 +39,10 @@ app.config['MAIL_PASSWORD'] = environ.get("PASSWORD")
 app.config['MAIL_USE_SSL'] = environ.get("MAIL_USE_SSL")
 app.config['MAIL_USE_TLS'] = environ.get("MAIL_USE_TLS")
 
+uri = environ.get("SQLALCHEMY_DATABASE_URI")  # or other relevant config var
+
+if uri.startswith("postgres://"):
+    uri = uri.replace("postgres://", "postgresql://", 1)
 #create an instance of socket io
 socketio = SocketIO(app)
 #connect to db
