@@ -42,7 +42,7 @@ Customers should be able to
 ### Links
 
 - Solution URL: [Github url](https://github.com/esthernickani/virtual-queuing.git)
-- Live Site URL: [Coming soon]()
+- Live Site URL: [Live site URL](https://virque-519cf39055eb.herokuapp.com/)
 
 ## My process
 
