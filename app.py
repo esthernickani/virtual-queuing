@@ -2,6 +2,8 @@ import os
 import pdb
 import json
 import jsonpickle
+import eventlet
+eventlet.monkey_patch()
 
 from flask import Flask, render_template, session, redirect, request, url_for, flash, jsonify
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required
@@ -195,7 +197,7 @@ def dequeue_customer(organization_id, customer_code):
             #get position of customer in queue 
             remove_from_queue('dequeue', organization, organization.queue, customer_code)
             #send SMS to customer that they are ready to be checked in
-            #send_dequeue_message(customer_in_db.contact_number)
+            send_dequeue_message(customer_in_db.contact_number)
             
         return redirect('/organization/queue')
     except Exception as e:
@@ -228,7 +230,7 @@ def delete_customer(organization_id, customer_code):
             remove_from_queue('delete', organization, organization.queue, customer_code)
         elif customer_in_db.status == "to be seated":
             remove_from_queue('delete', organization, organization.to_be_seated, customer_code)
-        #send_delete_message(customer_in_db.contact_number)
+        send_delete_message(customer_in_db.contact_number)
         flash(f"Customer {customer_code} has been successfully removed from the queue", 'success')
     except Exception as e:
         flash('Request could not be completed, please try again or contact support', 'error')
@@ -476,7 +478,7 @@ def join_queue(data):
 
 
     #send message to customer that they have joined queue
-    #send_join_queue_message(organization.username, new_customer_code, customer_number)
+    send_join_queue_message(organization.username, new_customer_code, customer_number)
 
     """socket redirect customer to the page that shows queue"""
     emit('redirect_customer', {'url': f"/customer/{new_customer_code}/waitlist"})
