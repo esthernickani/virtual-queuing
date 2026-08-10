@@ -30,7 +30,11 @@ basedir = path.abspath(path.dirname(__file__))
 load_dotenv(path.join(basedir, ".env"))
 
 app.config['SECRET_KEY'] = environ.get("SECRET_KEY")
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get("SQLALCHEMY_DATABASE_URI")
+
+db_uri = environ.get("SQLALCHEMY_DATABASE_URI")
+if db_uri and db_uri.startswith("postgres://"):
+    db_uri = db_uri.replace("postgres://", "postgresql://", 1)
+app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = environ.get("SQLALCHEMY_TRACK_MODIFICATIONS")
 app.config['SQLALCHEMY_ECHO'] = environ.get("SQLALCHEMY_ECHO")
 app.config['SESSION_TYPE'] = environ.get("SESSION_TYPE")
