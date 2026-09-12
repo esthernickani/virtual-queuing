@@ -39,7 +39,7 @@ multidict==6.4.4
 num2words==0.5.14
 packaging==25.0
 propcache==0.3.1
-psycopg2==2.9.10
+psycopg2-binary==2.9.10
 PyJWT==2.10.1
 python-dotenv==1.1.0
 python-engineio==4.12.1

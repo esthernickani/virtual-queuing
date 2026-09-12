@@ -31,7 +31,7 @@ load_dotenv(path.join(basedir, ".env"))
 
 app.config['SECRET_KEY'] = environ.get("SECRET_KEY")
 
-db_uri = environ.get("SQLALCHEMY_DATABASE_URI")
+db_uri = environ.get("SQLALCHEMY_DATABASE_URI") or environ.get("DATABASE_URL")
 if db_uri and db_uri.startswith("postgres://"):
     db_uri = db_uri.replace("postgres://", "postgresql://", 1)
 app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
