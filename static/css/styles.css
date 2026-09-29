@@ -941,3 +941,313 @@ svg {
 .all_customers hr {
     width: 100%;
 }
+/*responsive*/
+@media (max-width: 900px) {
+    header {
+        padding: 0 1.5rem;
+    }
+
+    body {
+        padding-bottom: 3rem;
+    }
+
+    /*home*/
+    .body-main {
+        flex-direction: column;
+        align-items: center;
+        padding: 3rem 1.5rem 4rem 1.5rem;
+        gap: 2rem;
+    }
+
+    .main-center-left {
+        padding-top: 0;
+    }
+
+    .main-center-right {
+        width: 100%;
+        max-width: 32rem;
+    }
+
+    .laptop-phone {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .home-enter-code-form {
+        transform: none;
+        align-items: center;
+    }
+
+    .input-submit {
+        padding-left: 0;
+        justify-content: center;
+    }
+
+    /*login and signup*/
+    .body-login {
+        width: 70vw;
+        height: auto;
+        padding: 2rem 1rem;
+        gap: 1.5rem;
+    }
+
+    .body-signup {
+        width: auto;
+        margin: 2rem 1rem;
+    }
+
+    /*organization queue*/
+    .queue-main-content {
+        padding: 2rem 1.5rem;
+    }
+
+    .queue-wait-time {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .queue-to-be-seated {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .queues-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .activate_queue {
+        margin: 4rem auto;
+        font-size: 2rem;
+    }
+
+    /*view queues*/
+    .organizations {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+        margin: 1.5rem;
+    }
+
+    .organizations-flex {
+        height: auto;
+        padding-top: 1rem;
+    }
+
+    #search_queues {
+        position: static;
+        display: block;
+        margin: 1.5rem auto 0 auto;
+        width: calc(100% - 3rem);
+        max-width: 20rem;
+    }
+
+    .no-queues {
+        margin-left: 0;
+        font-size: 2rem;
+        text-align: center;
+    }
+
+    /*profile*/
+    .side-main-content {
+        margin: 2rem 1.5rem;
+        flex-direction: column;
+    }
+
+    .side-nav {
+        width: 100%;
+        padding-bottom: 1rem;
+    }
+
+    .main-content {
+        width: 100%;
+        border-left: none;
+        border-top: 1px solid grey;
+        padding: 1.5rem;
+    }
+
+    .info-section p {
+        overflow-wrap: anywhere;
+    }
+}
+
+@media (max-width: 600px) {
+    header {
+        padding: 0 1rem;
+    }
+
+    .logo {
+        font-size: 1.5rem;
+    }
+
+    .body-main h1 {
+        font-size: 2.75rem;
+    }
+
+    .simplify {
+        padding-left: 0;
+    }
+
+    .btns {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .org-btn, .queue-join-btn {
+        margin-right: 0;
+        width: 100%;
+        max-width: 16rem;
+        padding: 0.6rem;
+    }
+
+    #code {
+        width: 12rem;
+    }
+
+    /*login and signup*/
+    .body-login {
+        width: auto;
+        margin: 2rem 1rem;
+        font-size: 1rem;
+    }
+
+    #organization_login_form input {
+        width: 100%;
+        max-width: 16rem;
+    }
+
+    .forgot-sign-up-link {
+        text-align: center;
+    }
+
+    .body-signup {
+        padding: 1.5rem 1rem;
+        font-size: 1rem;
+    }
+
+    .label-input-signup {
+        width: 100%;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+        margin-bottom: 0.5rem;
+    }
+
+    #organization_signup_form input,
+    #organization_signup_form select {
+        width: 100%;
+    }
+
+    /*organization queue*/
+    .organization_header .nav-bar ul {
+        gap: 0.75rem;
+        font-size: 0.9rem;
+    }
+
+    .queue-main-content {
+        padding: 1.5rem 1rem;
+    }
+
+    .queue-wait-time {
+        padding: 1.25rem;
+        font-size: 1rem;
+    }
+
+    .queue h2 {
+        font-size: 2rem;
+    }
+
+    .customer_card,
+    .seated_customer_card {
+        padding: 1rem;
+    }
+
+    .customer_card p,
+    .seated_customer_card p {
+        overflow-wrap: anywhere;
+    }
+
+    .card-btns {
+        margin-right: 0;
+    }
+
+    .deactivate_queue {
+        width: auto;
+        padding: 1.25rem;
+    }
+
+    /*view queues and join queue forms*/
+    .organizations {
+        grid-template-columns: 1fr;
+        margin: 1rem;
+    }
+
+    .individual_or_group,
+    .join-queue-form {
+        width: auto;
+        max-width: calc(100% - 2rem);
+        margin: 2rem auto;
+        padding: 1.5rem;
+    }
+
+    .show_queue_form input {
+        width: 100%;
+    }
+
+    /*in queue*/
+    .waitlist-body {
+        padding: 0 1rem;
+    }
+
+    .waitlist-card {
+        width: 100%;
+        padding: 1.5rem 1rem;
+        margin-top: 1.5rem;
+    }
+
+    .waitlist-card img {
+        width: 100%;
+        max-width: 14rem;
+    }
+
+    .waitlist-span {
+        gap: 1rem;
+    }
+
+    .travel-time-response {
+        gap: 1rem;
+    }
+
+    .notification {
+        left: 1rem;
+        right: 1rem;
+    }
+
+    /*unauthorised*/
+    .main-unauthorised {
+        text-align: center;
+        padding: 0 1rem;
+    }
+
+    .main-unauthorised h1 {
+        font-size: 2.5rem;
+    }
+
+    /*profile and forms*/
+    .reset-email-password-form input,
+    .add-new-password input,
+    .get-email #email {
+        width: 100%;
+    }
+
+    .change_email, .change_password {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .all_customers {
+        width: 100%;
+        padding: 1rem;
+    }
+}
