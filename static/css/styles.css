@@ -824,6 +824,21 @@ svg {
 
 }
 
+input.edit-btn,
+input.save-changes-btn,
+#save-changes-edit-password-email {
+    -webkit-appearance: none;
+    appearance: none;
+    display: block;
+    color: #242940;
+    font-size: 1rem;
+    line-height: 2rem;
+    padding: 0;
+    border-radius: 0;
+    text-align: center;
+    cursor: pointer;
+}
+
 .cancel-edit-btn:hover,
 .save-changes-btn:hover,
 .edit-btn:hover {
